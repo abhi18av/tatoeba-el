@@ -8,7 +8,14 @@
 *** Document the entire thing in the *org-mode* - Literate Programming 
 ** STEP-1 => Understand the current source code and minimalize it
 
-* 
+
+* Load the game file
+#+BEGIN_SRC elisp
+(load "~/Projects/Amsterdam/tatoeba-el/dunnet.el")
+
+#+END_SRC
+
+* various suggestions from authors 
 #+BEGIN_SRC elisp
 ;;; dunnet.el --- text adventure for Emacs
 
@@ -24,7 +31,9 @@
 
 *#+END_SRC
 
-* 
+
+* access the log file
+
 #+BEGIN_SRC elisp
 
 (defgroup dunnet nil
@@ -39,7 +48,7 @@
 
 #+END_SRC
 
-* 
+* Buffer and mode related  
 
 #+BEGIN_SRC elisp
 ;;;; Mode definitions for interactive mode
@@ -83,7 +92,7 @@
 
 
 
-* 
+* name of the game
 #+BEGIN_SRC elisp
 
 (defun dunnet-abhi18av ()
@@ -99,7 +108,7 @@
 
 #+END_SRC
 
-* 
+* Rooms and special objects
 
 #+BEGIN_SRC elisp
 ;;;;
@@ -226,7 +235,7 @@ disk bursts into flames, and disintegrates.")
 
 #+END_SRC
 
-* 
+* utility
 
 #+BEGIN_SRC elisp
 ;;; Print every object in player's inventory.  Special case for the jar,
@@ -329,7 +338,7 @@ through.")))))
 
 #+END_SRC
 
-* 
+* Actions
 
 #+BEGIN_SRC elisp
 ;;; Give long description of current room, or an object.
@@ -435,7 +444,7 @@ For an explosive time, go to Fourth St. and Vermont.")
 
 #+END_SRC
 
-* 
+* Actions
 #+BEGIN_SRC elisp
   ;;; We try to take an object that is untakable.  Print a message
   ;;; depending on what it is.
@@ -596,7 +605,7 @@ For an explosive time, go to Fourth St. and Vermont.")
         
 #+END_SRC
 
-* 
+* DIRECTIONS
 
 #+BEGIN_SRC elisp
 ;;; Various movement directions
@@ -645,8 +654,7 @@ For an explosive time, go to Fourth St. and Vermont.")
 
 #+END_SRC
 
-
-* 
+* MOVEMENTS
   #+BEGIN_SRC elisp
 
   ;;; Uses the dungeon-map to figure out where we are going.  If the
@@ -817,135 +825,135 @@ For an explosive time, go to Fourth St. and Vermont.")
   #+END_SRC
 * 
 
-  #+BEGIN_SRC elisp
+ #+BEGIN_SRC elisp
 
-  (defun dun-long (args)
-    (setq dun-mode "long"))
+ (defun dun-long (args)
+   (setq dun-mode "long"))
 
-  (defun dun-turn (obj)
-    (let (objnum direction)
-      (when (setq objnum (dun-objnum-from-args-std obj))
-        (if (not (or (member objnum (nth dun-current-room dun-room-objects))
-		     (member objnum (nth dun-current-room dun-room-silents))))
-	    (dun-mprincl "I don't see that here.")
-	  (if (not (= objnum obj-dial))
-	      (dun-mprincl "You can't turn that.")
-	    (setq direction (dun-firstword (cdr obj)))
-	    (if (or (not direction)
-		    (not (or (string= direction "clockwise")
-			     (string= direction "counterclockwise"))))
-	        (dun-mprincl "You must indicate clockwise or counterclockwise.")
-	      (if (string= direction "clockwise")
-		  (setq dun-sauna-level (+ dun-sauna-level 1))
-	        (setq dun-sauna-level (- dun-sauna-level 1)))
+ (defun dun-turn (obj)
+   (let (objnum direction)
+     (when (setq objnum (dun-objnum-from-args-std obj))
+       (if (not (or (member objnum (nth dun-current-room dun-room-objects))
+		    (member objnum (nth dun-current-room dun-room-silents))))
+	   (dun-mprincl "I don't see that here.")
+	 (if (not (= objnum obj-dial))
+	     (dun-mprincl "You can't turn that.")
+	   (setq direction (dun-firstword (cdr obj)))
+	   (if (or (not direction)
+		   (not (or (string= direction "clockwise")
+			    (string= direction "counterclockwise"))))
+	       (dun-mprincl "You must indicate clockwise or counterclockwise.")
+	     (if (string= direction "clockwise")
+		 (setq dun-sauna-level (+ dun-sauna-level 1))
+	       (setq dun-sauna-level (- dun-sauna-level 1)))
 
-	      (if (< dun-sauna-level 0)
-		  (progn
-		    (dun-mprincl
-		     "The dial will not turn further in that direction.")
-		    (setq dun-sauna-level 0))
-	        (dun-sauna-heat))))))))
+	     (if (< dun-sauna-level 0)
+		 (progn
+		   (dun-mprincl
+		    "The dial will not turn further in that direction.")
+		   (setq dun-sauna-level 0))
+	       (dun-sauna-heat))))))))
 
-  (defun dun-sauna-heat ()
-    (if (= dun-sauna-level 0)
-        (dun-mprincl
-         "The temperature has returned to normal room temperature."))
-    (if (= dun-sauna-level 1)
-        (dun-mprincl "It is now luke warm in here.  You are perspiring."))
-    (if (= dun-sauna-level 2)
-        (dun-mprincl "It is pretty hot in here.  It is still very comfortable."))
-    (if (= dun-sauna-level 3)
-        (progn
-	  (dun-mprincl
-  "It is now very hot.  There is something very refreshing about this.")
-	  (if (or (member obj-rms dun-inventory)
-		  (member obj-rms (nth dun-current-room dun-room-objects)))
-	      (progn
-	        (dun-mprincl
-  "You notice the wax on your statuette beginning to melt, until it completely
-  melts off.  You are left with a beautiful diamond!")
-	        (if (member obj-rms dun-inventory)
-		    (progn
-		      (dun-remove-obj-from-inven obj-rms)
-		      (setq dun-inventory (append dun-inventory
-						  (list obj-diamond))))
-		  (dun-remove-obj-from-room dun-current-room obj-rms)
-		  (dun-replace dun-room-objects dun-current-room
-			   (append (nth dun-current-room dun-room-objects)
-				   (list obj-diamond))))))
-	  (if (or (member obj-floppy dun-inventory)
-		  (member obj-floppy (nth dun-current-room dun-room-objects)))
-	      (progn
-	        (dun-mprincl
-  "You notice your floppy disk beginning to melt.  As you grab for it, the
-  disk bursts into flames, and disintegrates.")
-	        (if (member obj-floppy dun-inventory)
-		    (dun-remove-obj-from-inven obj-floppy)
-		  (dun-remove-obj-from-room dun-current-room obj-floppy))))))
+ (defun dun-sauna-heat ()
+   (if (= dun-sauna-level 0)
+       (dun-mprincl
+        "The temperature has returned to normal room temperature."))
+   (if (= dun-sauna-level 1)
+       (dun-mprincl "It is now luke warm in here.  You are perspiring."))
+   (if (= dun-sauna-level 2)
+       (dun-mprincl "It is pretty hot in here.  It is still very comfortable."))
+   (if (= dun-sauna-level 3)
+       (progn
+	 (dun-mprincl
+ "It is now very hot.  There is something very refreshing about this.")
+	 (if (or (member obj-rms dun-inventory)
+		 (member obj-rms (nth dun-current-room dun-room-objects)))
+	     (progn
+	       (dun-mprincl
+ "You notice the wax on your statuette beginning to melt, until it completely
+ melts off.  You are left with a beautiful diamond!")
+	       (if (member obj-rms dun-inventory)
+		   (progn
+		     (dun-remove-obj-from-inven obj-rms)
+		     (setq dun-inventory (append dun-inventory
+						 (list obj-diamond))))
+		 (dun-remove-obj-from-room dun-current-room obj-rms)
+		 (dun-replace dun-room-objects dun-current-room
+			  (append (nth dun-current-room dun-room-objects)
+				  (list obj-diamond))))))
+	 (if (or (member obj-floppy dun-inventory)
+		 (member obj-floppy (nth dun-current-room dun-room-objects)))
+	     (progn
+	       (dun-mprincl
+ "You notice your floppy disk beginning to melt.  As you grab for it, the
+ disk bursts into flames, and disintegrates.")
+	       (if (member obj-floppy dun-inventory)
+		   (dun-remove-obj-from-inven obj-floppy)
+		 (dun-remove-obj-from-room dun-current-room obj-floppy))))))
 
-    (if (= dun-sauna-level 4)
-        (progn
-	  (dun-mprincl
-  "As the dial clicks into place, you immediately burst into flames.")
-	  (dun-die "burning"))))
+   (if (= dun-sauna-level 4)
+       (progn
+	 (dun-mprincl
+ "As the dial clicks into place, you immediately burst into flames.")
+	 (dun-die "burning"))))
 
-  (defun dun-press (obj)
-    (let (objnum)
-      (when (setq objnum (dun-objnum-from-args-std obj))
-        (if (not (or (member objnum (nth dun-current-room dun-room-objects))
-		     (member objnum (nth dun-current-room dun-room-silents))))
-	    (dun-mprincl "I don't see that here.")
-	  (if (not (member objnum (list obj-button obj-switch)))
-	      (progn
-	        (dun-mprinc "You can't ")
-	        (dun-mprinc (car line-list))
-	        (dun-mprincl " that."))
-	    (if (= objnum obj-button)
-	        (dun-mprincl
-  "As you press the button, you notice a passageway open up, but
-  as you release it, the passageway closes."))
-	    (if (= objnum obj-switch)
-	        (if dun-black
-		    (progn
-		      (dun-mprincl "The button is now in the off position.")
-		      (setq dun-black nil))
-		  (dun-mprincl "The button is now in the on position.")
-		  (setq dun-black t))))))))
+ (defun dun-press (obj)
+   (let (objnum)
+     (when (setq objnum (dun-objnum-from-args-std obj))
+       (if (not (or (member objnum (nth dun-current-room dun-room-objects))
+		    (member objnum (nth dun-current-room dun-room-silents))))
+	   (dun-mprincl "I don't see that here.")
+	 (if (not (member objnum (list obj-button obj-switch)))
+	     (progn
+	       (dun-mprinc "You can't ")
+	       (dun-mprinc (car line-list))
+	       (dun-mprincl " that."))
+	   (if (= objnum obj-button)
+	       (dun-mprincl
+ "As you press the button, you notice a passageway open up, but
+ as you release it, the passageway closes."))
+	   (if (= objnum obj-switch)
+	       (if dun-black
+		   (progn
+		     (dun-mprincl "The button is now in the off position.")
+		     (setq dun-black nil))
+		 (dun-mprincl "The button is now in the on position.")
+		 (setq dun-black t))))))))
 
-  (defun dun-swim (args)
-    (if (not (member dun-current-room (list lakefront-north lakefront-south)))
-        (dun-mprincl "I see no water!")
-      (if (not (member obj-life dun-inventory))
-	  (progn
-	    (dun-mprincl
-  "You dive in the water, and at first notice it is quite cold.  You then
-  start to get used to it as you realize that you never really learned how
-  to swim.")
-	    (dun-die "drowning"))
-        (if (= dun-current-room lakefront-north)
-	    (setq dun-current-room lakefront-south)
-	  (setq dun-current-room lakefront-north)))))
+ (defun dun-swim (args)
+   (if (not (member dun-current-room (list lakefront-north lakefront-south)))
+       (dun-mprincl "I see no water!")
+     (if (not (member obj-life dun-inventory))
+	 (progn
+	   (dun-mprincl
+ "You dive in the water, and at first notice it is quite cold.  You then
+ start to get used to it as you realize that you never really learned how
+ to swim.")
+	   (dun-die "drowning"))
+       (if (= dun-current-room lakefront-north)
+	   (setq dun-current-room lakefront-south)
+	 (setq dun-current-room lakefront-north)))))
 
 
-  (defun dun-score (args)
-    (if (not dun-endgame)
-        (let (total)
-	  (setq total (dun-reg-score))
-	  (dun-mprinc "You have scored ")
-	  (dun-mprinc total)
-	  (dun-mprincl " out of a possible 90 points.") total)
-      (dun-mprinc "You have scored ")
-      (dun-mprinc (dun-endgame-score))
-      (dun-mprincl " endgame points out of a possible 110.")
-      (if (= (dun-endgame-score) 110)
-	  (dun-mprincl
-  "\n\nCongratulations.  You have won.  The wizard password is ‘moby’"))))
+ (defun dun-score (args)
+   (if (not dun-endgame)
+       (let (total)
+	 (setq total (dun-reg-score))
+	 (dun-mprinc "You have scored ")
+	 (dun-mprinc total)
+	 (dun-mprincl " out of a possible 90 points.") total)
+     (dun-mprinc "You have scored ")
+     (dun-mprinc (dun-endgame-score))
+     (dun-mprincl " endgame points out of a possible 110.")
+     (if (= (dun-endgame-score) 110)
+	 (dun-mprincl
+ "\n\nCongratulations.  You have won.  The wizard password is ‘moby’"))))
 
-  #+END_SRC
+ #+END_SRC
 
-* 
+* Help and piss
 
-  #+BEGIN_SRC elisp
+#+BEGIN_SRC elisp
     (defun dun-help (args)
       (dun-mprincl
     "Welcome to dunnet (2.02), by Ron Schnell (ronnie@driver-aces.com - @RonnieSchnell).
@@ -1069,90 +1077,90 @@ For an explosive time, go to Fourth St. and Vermont.")
 
   #+END_SRC
 
-* 
-  #+BEGIN_SRC elisp
+* Scoring
+ #+BEGIN_SRC elisp
 
-  (defun dun-superb (args)
-    (setq dun-mode 'dun-superb))
+ (defun dun-superb (args)
+   (setq dun-mode 'dun-superb))
 
-  (defun dun-reg-score ()
-    (let (total)
-      (setq total 0)
-      (dolist (x (nth treasure-room dun-room-objects))
-        (setq total (+ total (nth x dun-object-pts))))
-      (if (member obj-URINE (nth treasure-room dun-room-objects))
-	  (setq total 0)) total))
+ (defun dun-reg-score ()
+   (let (total)
+     (setq total 0)
+     (dolist (x (nth treasure-room dun-room-objects))
+       (setq total (+ total (nth x dun-object-pts))))
+     (if (member obj-URINE (nth treasure-room dun-room-objects))
+	 (setq total 0)) total))
 
-  (defun dun-endgame-score ()
-    (let (total)
-      (setq total 0)
-      (dolist (x (nth endgame-treasure-room dun-room-objects))
-        (setq total (+ total (nth x dun-object-pts)))) total))
+ (defun dun-endgame-score ()
+   (let (total)
+     (setq total 0)
+     (dolist (x (nth endgame-treasure-room dun-room-objects))
+       (setq total (+ total (nth x dun-object-pts)))) total))
 
-  (defun dun-answer (args)
-    (if (not dun-correct-answer)
-        (dun-mprincl "I don't believe anyone asked you anything.")
-      (setq args (car args))
-      (if (not args)
-	  (dun-mprincl "You must give the answer on the same line.")
-        (if (dun-members args dun-correct-answer)
-	    (progn
-	      (dun-mprincl "Correct.")
-	      (if (= dun-lastdir 0)
-		  (setq dun-current-room (1+ dun-current-room))
-	        (setq dun-current-room (- dun-current-room 1)))
-	      (setq dun-correct-answer nil))
-	  (dun-mprincl "That answer is incorrect.")))))
+ (defun dun-answer (args)
+   (if (not dun-correct-answer)
+       (dun-mprincl "I don't believe anyone asked you anything.")
+     (setq args (car args))
+     (if (not args)
+	 (dun-mprincl "You must give the answer on the same line.")
+       (if (dun-members args dun-correct-answer)
+	   (progn
+	     (dun-mprincl "Correct.")
+	     (if (= dun-lastdir 0)
+		 (setq dun-current-room (1+ dun-current-room))
+	       (setq dun-current-room (- dun-current-room 1)))
+	     (setq dun-correct-answer nil))
+	 (dun-mprincl "That answer is incorrect.")))))
 
-  (defun dun-endgame-question ()
-  (if (not dun-endgame-questions)
-      (progn
-        (dun-mprincl "Your question is:")
-        (dun-mprincl "No more questions, just do ‘answer foo’.")
-        (setq dun-correct-answer '("foo")))
-    (let (which i newques)
-      (setq i 0)
-      (setq newques nil)
-      (setq which (random (length dun-endgame-questions)))
-      (dun-mprincl "Your question is:")
-      (dun-mprincl (setq dun-endgame-question (car
-					       (nth which
-						    dun-endgame-questions))))
-      (setq dun-correct-answer (cdr (nth which dun-endgame-questions)))
-      (while (< i which)
-        (setq newques (append newques (list (nth i dun-endgame-questions))))
-        (setq i (1+ i)))
-      (setq i (1+ which))
-      (while (< i (length dun-endgame-questions))
-        (setq newques (append newques (list (nth i dun-endgame-questions))))
-        (setq i (1+ i)))
-      (setq dun-endgame-questions newques))))
+ (defun dun-endgame-question ()
+ (if (not dun-endgame-questions)
+     (progn
+       (dun-mprincl "Your question is:")
+       (dun-mprincl "No more questions, just do ‘answer foo’.")
+       (setq dun-correct-answer '("foo")))
+   (let (which i newques)
+     (setq i 0)
+     (setq newques nil)
+     (setq which (random (length dun-endgame-questions)))
+     (dun-mprincl "Your question is:")
+     (dun-mprincl (setq dun-endgame-question (car
+					      (nth which
+						   dun-endgame-questions))))
+     (setq dun-correct-answer (cdr (nth which dun-endgame-questions)))
+     (while (< i which)
+       (setq newques (append newques (list (nth i dun-endgame-questions))))
+       (setq i (1+ i)))
+     (setq i (1+ which))
+     (while (< i (length dun-endgame-questions))
+       (setq newques (append newques (list (nth i dun-endgame-questions))))
+       (setq i (1+ i)))
+     (setq dun-endgame-questions newques))))
 
-  (defun dun-power (args)
-    (if (not (= dun-current-room pc-area))
-        (dun-mprincl "That operation is not applicable here.")
-      (if (not dun-floppy)
-	  (dun-dos-no-disk)
-        (dun-dos-interface))))
+ (defun dun-power (args)
+   (if (not (= dun-current-room pc-area))
+       (dun-mprincl "That operation is not applicable here.")
+     (if (not dun-floppy)
+	 (dun-dos-no-disk)
+       (dun-dos-interface))))
 
-  (defun dun-feed (args)
-    (let (objnum)
-      (when (setq objnum (dun-objnum-from-args-std args))
-        (if (and (= objnum obj-bear)
-	         (member obj-bear (nth dun-current-room dun-room-objects)))
-	    (progn
-	      (if (not (member obj-food dun-inventory))
-		  (dun-mprincl "You have nothing with which to feed it.")
-	        (dun-drop '("food"))))
-	  (if (not (or (member objnum (nth dun-current-room dun-room-objects))
-		       (member objnum dun-inventory)
-		       (member objnum (nth dun-current-room dun-room-silents))))
-	      (dun-mprincl "I don't see that here.")
-	    (dun-mprincl "You cannot feed that."))))))
+ (defun dun-feed (args)
+   (let (objnum)
+     (when (setq objnum (dun-objnum-from-args-std args))
+       (if (and (= objnum obj-bear)
+	        (member obj-bear (nth dun-current-room dun-room-objects)))
+	   (progn
+	     (if (not (member obj-food dun-inventory))
+		 (dun-mprincl "You have nothing with which to feed it.")
+	       (dun-drop '("food"))))
+	 (if (not (or (member objnum (nth dun-current-room dun-room-objects))
+		      (member objnum dun-inventory)
+		      (member objnum (nth dun-current-room dun-room-silents))))
+	     (dun-mprincl "I don't see that here.")
+	   (dun-mprincl "You cannot feed that."))))))
 
-  #+END_SRC
+ #+END_SRC
 
-* 
+* VERBS 
 
   #+BEGIN_SRC elisp
   ;;;;
@@ -1450,7 +1458,7 @@ For an explosive time, go to Fourth St. and Vermont.")
 
 
 #+END_SRC
-* 
+* The dialogues for rooms
 
 #+BEGIN_SRC elisp
   (setq dun-rooms '(
@@ -2017,7 +2025,7 @@ For an explosive time, go to Fourth St. and Vermont.")
 
 
 #+END_SRC
-* 
+* The Dungeon Map
 
 
 #+BEGIN_SRC elisp
@@ -2203,13 +2211,13 @@ For an explosive time, go to Fourth St. and Vermont.")
 
 
 #+END_SRC
-* 
+* Description of objects which are movable/ can be described/ can be taken
 
 #+BEGIN_SRC elisp
   (defconst obj-special 255)
 
   ;;; The initial setup of what objects are in each room.
-  ;;; Regular objects have whole numbers lower than 255.
+  ;;; REGULAR OBJECTS HAVE WHOLE NUMBERS LOWER THAN 255.
   ;;; Objects that cannot be taken but might move and are
   ;;; described during room description are negative.
   ;;; Stuff that is described and might change are 255, and are
@@ -2403,7 +2411,7 @@ For an explosive time, go to Fourth St. and Vermont.")
 
 
 #+END_SRC
-* 
+* Regular object description
 
 #+BEGIN_SRC elisp
   ;;; These are the descriptions the user gets when regular objects are
@@ -2442,7 +2450,7 @@ For an explosive time, go to Fourth St. and Vermont.")
   )
 
 #+END_SRC
-* 
+* Non-regular object description
 
 #+BEGIN_SRC elisp
 
@@ -2562,7 +2570,7 @@ For an explosive time, go to Fourth St. and Vermont.")
 
  
 #+END_SRC
-* 
+* UNIX stuff
   
 #+BEGIN_SRC elisp
   ;;;;
@@ -2654,7 +2662,7 @@ For an explosive time, go to Fourth St. and Vermont.")
 
 #+END_SRC
 
-* 
+* Something related to UNIX
 #+BEGIN_SRC elisp
   (defun dun-unix-interface ()
     (dun-login)
@@ -3100,10 +3108,10 @@ For an explosive time, go to Fourth St. and Vermont.")
 
 #+END_SRC
 
-* 
+* Save and Reload the game status
 
   #+BEGIN_SRC elisp
-
+  
   ;;;;
   ;;;; This section defines the DOS emulation functions for dunnet
   ;;;;
@@ -3207,7 +3215,7 @@ For an explosive time, go to Fourth St. and Vermont.")
 
   (defun dun-dos-nil (args))
 
-* 
+* Save game
 
 #+BEGIN_SRC elisp
   ;;;;
@@ -3343,13 +3351,12 @@ For an explosive time, go to Fourth St. and Vermont.")
       (kill-buffer (current-buffer))))
 
 
-
 #+END_SRC
 
-* 
+* Definitions for Batch mode
 
 
-#+BEGIN_SRC
+#+BEGIN_SRC elisp
 
   ;;;;
   ;;;; These are functions, and function re-definitions so that dungeon can
