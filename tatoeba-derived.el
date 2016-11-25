@@ -45,8 +45,8 @@
 
 ;;;; Mode definitions for interactive mode
 
-(define-derived-mode dun-mode text-mode "Dungeon"
-  "Major mode for running dunnet."
+(define-derived-mode dun-mode text-mode "Tatoeba"
+  "Major mode for running Tatoeba."
   (make-local-variable 'scroll-step)
   (setq scroll-step 2))
 
@@ -80,12 +80,11 @@
 	  (dun-fix-screen)
 	  (dun-mprinc ">")))))
 
-
 ;;;###autoload
 (defun tatoeba ()
-  "Switch to *dungeon* buffer and start game."
+  "Switch to *tatoeba* buffer and start game."
   (interactive)
-  (switch-to-buffer "*dungeon*")
+  (switch-to-buffer "*tatoeba*")
   (dun-mode)
   (setq dun-dead nil)
   (setq room 0)
@@ -2558,7 +2557,7 @@ treasures for points?" "4" "four")
 	(eval-buffer)
       (error (setq eval-error t)))
     (kill-buffer (current-buffer))
-    (switch-to-buffer "*dungeon*")
+    (switch-to-buffer "*tatoeba*")
     (if eval-error
 	(dun-mprincl "Invalid syntax."))))
 
@@ -3152,7 +3151,7 @@ File not found")))
     (if (dun-compile-save-out filename)
 	(dun-mprincl "Error saving to file.")
       (dun-do-logfile 'save nil)
-      (switch-to-buffer "*dungeon*")
+      (switch-to-buffer "*tatoeba*")
       (princ "")
       (dun-mprincl "Done."))))
 
@@ -3247,99 +3246,6 @@ File not found")))
 ;;;; be run in batch mode.
 
 
-(defun dun-batch-mprinc (arg)
-   (if (stringp arg)
-       (send-string-to-terminal arg)
-     (send-string-to-terminal (prin1-to-string arg))))
-
-
-(defun dun-batch-mprincl (arg)
-   (if (stringp arg)
-       (progn
-           (send-string-to-terminal arg)
-           (send-string-to-terminal "\n"))
-     (send-string-to-terminal (prin1-to-string arg))
-     (send-string-to-terminal "\n")))
-
-(defun dun-batch-parse (dun-ignore dun-verblist line)
-  (setq line-list (dun-listify-string (concat line " ")))
-  (dun-doverb dun-ignore dun-verblist (car line-list) (cdr line-list)))
-
-(defun dun-batch-parse2 (dun-ignore dun-verblist line)
-  (setq line-list (dun-listify-string2 (concat line " ")))
-  (dun-doverb dun-ignore dun-verblist (car line-list) (cdr line-list)))
-
-(defun dun-batch-read-line ()
-  (read-from-minibuffer "" nil dungeon-batch-map))
-
-
-(defun dun-batch-loop ()
-  (setq dun-dead nil)
-  (setq room 0)
-  (while (not dun-dead)
-    (if (eq dungeon-mode 'dungeon)
-	(progn
-	  (if (not (= room dun-current-room))
-	      (progn
-		(dun-describe-room dun-current-room)
-		(setq room dun-current-room)))
-	  (dun-mprinc ">")
-	  (setq line (downcase (dun-read-line)))
-	  (if (eq (dun-vparse dun-ignore dun-verblist line) -1)
-	      (dun-mprinc "I don't understand that.\n"))))))
-
-(defun dun-batch-dos-interface ()
-  (dun-dos-boot-msg)
-  (setq dungeon-mode 'dos)
-  (while (eq dungeon-mode 'dos)
-    (dun-dos-prompt)
-    (setq line (downcase (dun-read-line)))
-    (if (eq (dun-parse2 nil dun-dos-verbs line) -1)
-	(progn
-	  (sleep-for 1)
-	  (dun-mprincl "Bad command or file name"))))
-  (goto-char (point-max))
-  (dun-mprinc "\n"))
-
-(defun dun-batch-unix-interface ()
-    (dun-login)
-    (if dun-logged-in
-	(progn
-	  (setq dungeon-mode 'unix)
-	  (while (eq dungeon-mode 'unix)
-	    (dun-mprinc "$ ")
-	    (setq line (downcase (dun-read-line)))
-	    (if (eq (dun-parse2 nil dun-unix-verbs line) -1)
-		(let (esign)
-		  (if (setq esign (string-match "=" line))
-		      (dun-doassign line esign)
-		    (dun-mprinc (car line-list))
-		    (dun-mprincl ": not found.")))))
-	  (goto-char (point-max))
-	  (dun-mprinc "\n"))))
-
-(defun dungeon-nil (arg)
-  "noop"
-  (interactive "*p")
-  nil)
-
-(defun dun-batch-dungeon ()
-  (load "dun-batch")
-  (setq dun-visited '(27))
-  (dun-mprinc "\n")
-  (dun-batch-loop))
-
-(unless (not noninteractive)
-  (fset 'dun-mprinc 'dun-batch-mprinc)
-  (fset 'dun-mprincl 'dun-batch-mprincl)
-  (fset 'dun-vparse 'dun-batch-parse)
-  (fset 'dun-parse2 'dun-batch-parse2)
-  (fset 'dun-read-line 'dun-batch-read-line)
-  (fset 'dun-dos-interface 'dun-batch-dos-interface)
-  (fset 'dun-unix-interface 'dun-batch-unix-interface)
-  (dun-mprinc "\n")
-  (setq dun-batch-mode t)
-  (dun-batch-loop))
 
 (provide 'dunnet)
 
