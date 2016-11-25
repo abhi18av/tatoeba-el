@@ -8,7 +8,6 @@
 *** Document the entire thing in the *org-mode* - Literate Programming 
 ** STEP-1 => Understand the current source code and minimalize it
 
-
 * 
 #+BEGIN_SRC elisp
 ;;; dunnet.el --- text adventure for Emacs
@@ -23,7 +22,7 @@
 ;;; Code:
 
 
-#+END_SRC
+*#+END_SRC
 
 * 
 #+BEGIN_SRC elisp
@@ -84,11 +83,9 @@
 
 
 
-
 * 
 #+BEGIN_SRC elisp
 
-autoload
 (defun dunnet-abhi18av ()
   "Switch to *dungeon* buffer and start game."
   (interactive)
@@ -434,162 +431,169 @@ For an explosive time, go to Fourth St. and Vermont.")
     (dolist (x dun-inventory)
       (setq total (+ total (nth x dun-object-lbs)))) total))
 
-;;; We try to take an object that is untakable.  Print a message
-;;; depending on what it is.
 
-(defun dun-try-take (obj)
-  (dun-mprinc "You cannot take that."))
 
-(defun dun-dig (args)
-  (if dun-inbus
-      (dun-mprincl "Digging here reveals nothing.")
-  (if (not (member 0 dun-inventory))
-      (dun-mprincl "You have nothing with which to dig.")
-    (if (not (nth dun-current-room dun-diggables))
-	(dun-mprincl "Digging here reveals nothing.")
-      (dun-mprincl "I think you found something.")
-      (dun-replace dun-room-objects dun-current-room
-	       (append (nth dun-current-room dun-room-objects)
-		       (nth dun-current-room dun-diggables)))
-      (dun-replace dun-diggables dun-current-room nil)))))
+#+END_SRC
 
-(defun dun-climb (obj)
-  (let (objnum)
-    (setq objnum (dun-objnum-from-args obj))
-    (cond ((not objnum)
-	   (dun-mprincl "I don't know what that object is."))
-	  ((and (not (eq objnum obj-special))
-		(not (member objnum (nth dun-current-room dun-room-objects)))
-		(not (member objnum (nth dun-current-room dun-room-silents)))
-		(not (and (member objnum dun-jar) (member obj-jar dun-inventory)))
-		(not (member objnum dun-inventory)))
-	   (dun-mprincl "I don't see that here."))
-	  ((and (eq objnum obj-special)
-		(not (member obj-tree (nth dun-current-room dun-room-silents))))
-	   (dun-mprincl "There is nothing here to climb."))
-	  ((and (not (eq objnum obj-tree)) (not (eq objnum obj-special)))
-	   (dun-mprincl "You can't climb that."))
-	  (t
-	   (dun-mprincl
-	    "You manage to get about two feet up the tree and fall back down.  You
-notice that the tree is very unsteady.")))))
+* 
+#+BEGIN_SRC elisp
+  ;;; We try to take an object that is untakable.  Print a message
+  ;;; depending on what it is.
 
-(defun dun-eat (obj)
-  (let (objnum)
-    (when (setq objnum (dun-objnum-from-args-std obj))
-      (if (not (member objnum dun-inventory))
-	  (dun-mprincl "You don't have that.")
-	(if (not (= objnum obj-food))
-	    (progn
-	      (dun-mprinc "You forcefully shove ")
-	      (dun-mprinc (downcase (cadr (nth objnum dun-objects))))
-	      (dun-mprincl " down your throat, and start choking.")
-	      (dun-die "choking"))
-	  (dun-mprincl "That tasted horrible.")
-	  (dun-remove-obj-from-inven obj-food))))))
+  (defun dun-try-take (obj)
+    (dun-mprinc "You cannot take that."))
 
-(defun dun-put (args)
-    (let (newargs objnum objnum2 obj)
-      (setq newargs (dun-firstwordl args))
-      (if (not newargs)
-	  (dun-mprincl "You must supply an object")
-	(setq obj (intern (car newargs)))
-	(setq objnum (cdr (assq obj dun-objnames)))
-	(if (not objnum)
-	    (dun-mprincl "I don't know what that object is.")
-	  (if (not (member objnum dun-inventory))
-	      (dun-mprincl "You don't have that.")
-	    (setq newargs (dun-firstwordl (cdr newargs)))
-	    (setq newargs (dun-firstwordl (cdr newargs)))
-	    (if (not newargs)
-		(dun-mprincl "You must supply an indirect object.")
-	      (setq objnum2 (cdr (assq (intern (car newargs)) dun-objnames)))
-	      (if (and (eq objnum2 obj-computer) (= dun-current-room pc-area))
-		  (setq objnum2 obj-pc))
-	      (if (not objnum2)
-		  (dun-mprincl "I don't know what that indirect object is.")
-		(if (and (not (member objnum2
-				      (nth dun-current-room dun-room-objects)))
-			 (not (member objnum2
-				      (nth dun-current-room dun-room-silents)))
-			 (not (member objnum2 dun-inventory)))
-		    (dun-mprincl "That indirect object is not here.")
-		  (dun-put-objs objnum objnum2)))))))))
+  (defun dun-dig (args)
+    (if dun-inbus
+        (dun-mprincl "Digging here reveals nothing.")
+    (if (not (member 0 dun-inventory))
+        (dun-mprincl "You have nothing with which to dig.")
+      (if (not (nth dun-current-room dun-diggables))
+	  (dun-mprincl "Digging here reveals nothing.")
+        (dun-mprincl "I think you found something.")
+        (dun-replace dun-room-objects dun-current-room
+	         (append (nth dun-current-room dun-room-objects)
+		         (nth dun-current-room dun-diggables)))
+        (dun-replace dun-diggables dun-current-room nil)))))
 
-(defun dun-put-objs (obj1 obj2)
-  (if (and (= obj2 obj-drop) (not dun-nomail))
-      (setq obj2 obj-chute))
+  (defun dun-climb (obj)
+    (let (objnum)
+      (setq objnum (dun-objnum-from-args obj))
+      (cond ((not objnum)
+	     (dun-mprincl "I don't know what that object is."))
+	    ((and (not (eq objnum obj-special))
+		  (not (member objnum (nth dun-current-room dun-room-objects)))
+		  (not (member objnum (nth dun-current-room dun-room-silents)))
+		  (not (and (member objnum dun-jar) (member obj-jar dun-inventory)))
+		  (not (member objnum dun-inventory)))
+	     (dun-mprincl "I don't see that here."))
+	    ((and (eq objnum obj-special)
+		  (not (member obj-tree (nth dun-current-room dun-room-silents))))
+	     (dun-mprincl "There is nothing here to climb."))
+	    ((and (not (eq objnum obj-tree)) (not (eq objnum obj-special)))
+	     (dun-mprincl "You can't climb that."))
+	    (t
+	     (dun-mprincl
+	      "You manage to get about two feet up the tree and fall back down.  You
+  notice that the tree is very unsteady.")))))
 
-  (if (= obj2 obj-disposal) (setq obj2 obj-chute))
+  (defun dun-eat (obj)
+    (let (objnum)
+      (when (setq objnum (dun-objnum-from-args-std obj))
+        (if (not (member objnum dun-inventory))
+	    (dun-mprincl "You don't have that.")
+	  (if (not (= objnum obj-food))
+	      (progn
+	        (dun-mprinc "You forcefully shove ")
+	        (dun-mprinc (downcase (cadr (nth objnum dun-objects))))
+	        (dun-mprincl " down your throat, and start choking.")
+	        (dun-die "choking"))
+	    (dun-mprincl "That tasted horrible.")
+	    (dun-remove-obj-from-inven obj-food))))))
 
-  (if (and (= obj1 obj-cpu) (= obj2 obj-computer))
-      (progn
-	(dun-remove-obj-from-inven obj-cpu)
-	(setq dun-computer t)
-	(dun-mprincl
-"As you put the CPU board in the computer, it immediately springs to life.
-The lights start flashing, and the fans seem to startup."))
-    (if (and (= obj1 obj-weight) (= obj2 obj-button))
-	(dun-drop '("weight"))
-      (if (= obj2 obj-jar)                 ;; Put something in jar
-	  (if (not (member obj1 (list obj-paper obj-diamond obj-emerald
-				      obj-license obj-coins obj-egg
-				      obj-nitric obj-glycerine)))
-	      (dun-mprincl "That will not fit in the jar.")
-	    (dun-remove-obj-from-inven obj1)
-	    (setq dun-jar (append dun-jar (list obj1)))
-	    (dun-mprincl "Done."))
-	(if (= obj2 obj-chute)                 ;; Put something in chute
-	    (progn
+  (defun dun-put (args)
+      (let (newargs objnum objnum2 obj)
+        (setq newargs (dun-firstwordl args))
+        (if (not newargs)
+	    (dun-mprincl "You must supply an object")
+	  (setq obj (intern (car newargs)))
+	  (setq objnum (cdr (assq obj dun-objnames)))
+	  (if (not objnum)
+	      (dun-mprincl "I don't know what that object is.")
+	    (if (not (member objnum dun-inventory))
+	        (dun-mprincl "You don't have that.")
+	      (setq newargs (dun-firstwordl (cdr newargs)))
+	      (setq newargs (dun-firstwordl (cdr newargs)))
+	      (if (not newargs)
+		  (dun-mprincl "You must supply an indirect object.")
+	        (setq objnum2 (cdr (assq (intern (car newargs)) dun-objnames)))
+	        (if (and (eq objnum2 obj-computer) (= dun-current-room pc-area))
+		    (setq objnum2 obj-pc))
+	        (if (not objnum2)
+		    (dun-mprincl "I don't know what that indirect object is.")
+		  (if (and (not (member objnum2
+				        (nth dun-current-room dun-room-objects)))
+			   (not (member objnum2
+				        (nth dun-current-room dun-room-silents)))
+			   (not (member objnum2 dun-inventory)))
+		      (dun-mprincl "That indirect object is not here.")
+		    (dun-put-objs objnum objnum2)))))))))
+
+  (defun dun-put-objs (obj1 obj2)
+    (if (and (= obj2 obj-drop) (not dun-nomail))
+        (setq obj2 obj-chute))
+
+    (if (= obj2 obj-disposal) (setq obj2 obj-chute))
+
+    (if (and (= obj1 obj-cpu) (= obj2 obj-computer))
+        (progn
+	  (dun-remove-obj-from-inven obj-cpu)
+	  (setq dun-computer t)
+	  (dun-mprincl
+  "As you put the CPU board in the computer, it immediately springs to life.
+  The lights start flashing, and the fans seem to startup."))
+      (if (and (= obj1 obj-weight) (= obj2 obj-button))
+	  (dun-drop '("weight"))
+        (if (= obj2 obj-jar)                 ;; Put something in jar
+	    (if (not (member obj1 (list obj-paper obj-diamond obj-emerald
+				        obj-license obj-coins obj-egg
+				        obj-nitric obj-glycerine)))
+	        (dun-mprincl "That will not fit in the jar.")
 	      (dun-remove-obj-from-inven obj1)
-	      (dun-mprincl
-"You hear it slide down the chute and off into the distance.")
-	      (dun-put-objs-in-treas (list obj1)))
-	  (if (= obj2 obj-box)              ;; Put key in key box
-	      (if (= obj1 obj-key)
-		  (progn
-		    (dun-mprincl
-"As you drop the key, the box begins to shake.  Finally it explodes
-with a bang.  The key seems to have vanished!")
-		    (dun-remove-obj-from-inven obj1)
-		    (dun-replace dun-room-objects computer-room (append
-							(nth computer-room
-							     dun-room-objects)
-							(list obj1)))
-		    (dun-remove-obj-from-room dun-current-room obj-box)
-		    (setq dun-key-level (1+ dun-key-level)))
-		(dun-mprincl "You can't put that in the key box!"))
-
-	    (if (and (= obj1 obj-floppy) (= obj2 obj-pc))
-		(progn
-		  (setq dun-floppy t)
-		  (dun-remove-obj-from-inven obj1)
-		  (dun-mprincl "Done."))
-
-	      (if (= obj2 obj-urinal)                   ;; Put object in urinal
-		  (progn
-		    (dun-remove-obj-from-inven obj1)
-		    (dun-replace dun-room-objects urinal (append
-						  (nth urinal dun-room-objects)
-						   (list obj1)))
-		    (dun-mprincl
-		     "You hear it plop down in some water below."))
-		(if (= obj2 obj-mail)
-		    (dun-mprincl "The mail chute is locked.")
-		  (if (member obj1 dun-inventory)
+	      (setq dun-jar (append dun-jar (list obj1)))
+	      (dun-mprincl "Done."))
+	  (if (= obj2 obj-chute)                 ;; Put something in chute
+	      (progn
+	        (dun-remove-obj-from-inven obj1)
+	        (dun-mprincl
+  "You hear it slide down the chute and off into the distance.")
+	        (dun-put-objs-in-treas (list obj1)))
+	    (if (= obj2 obj-box)              ;; Put key in key box
+	        (if (= obj1 obj-key)
+		    (progn
 		      (dun-mprincl
-"I don't know how to combine those objects.  Perhaps you should
-just try dropping it.")
-		    (dun-mprincl"You can't put that there.")))))))))))
+  "As you drop the key, the box begins to shake.  Finally it explodes
+  with a bang.  The key seems to have vanished!")
+		      (dun-remove-obj-from-inven obj1)
+		      (dun-replace dun-room-objects computer-room (append
+							  (nth computer-room
+							       dun-room-objects)
+							  (list obj1)))
+		      (dun-remove-obj-from-room dun-current-room obj-box)
+		      (setq dun-key-level (1+ dun-key-level)))
+		  (dun-mprincl "You can't put that in the key box!"))
 
-(defun dun-type (args)
-  (if (not (= dun-current-room computer-room))
-      (dun-mprincl "There is nothing here on which you could type.")
-    (if (not dun-computer)
-	(dun-mprincl
-"You type on the keyboard, but your characters do not even echo.")
-      (dun-unix-interface))))
+	      (if (and (= obj1 obj-floppy) (= obj2 obj-pc))
+		  (progn
+		    (setq dun-floppy t)
+		    (dun-remove-obj-from-inven obj1)
+		    (dun-mprincl "Done."))
 
+	        (if (= obj2 obj-urinal)                   ;; Put object in urinal
+		    (progn
+		      (dun-remove-obj-from-inven obj1)
+		      (dun-replace dun-room-objects urinal (append
+						    (nth urinal dun-room-objects)
+						     (list obj1)))
+		      (dun-mprincl
+		       "You hear it plop down in some water below."))
+		  (if (= obj2 obj-mail)
+		      (dun-mprincl "The mail chute is locked.")
+		    (if (member obj1 dun-inventory)
+		        (dun-mprincl
+  "I don't know how to combine those objects.  Perhaps you should
+  just try dropping it.")
+		      (dun-mprincl"You can't put that there.")))))))))))
+
+  (defun dun-type (args)
+    (if (not (= dun-current-room computer-room))
+        (dun-mprincl "There is nothing here on which you could type.")
+      (if (not dun-computer)
+	  (dun-mprincl
+  "You type on the keyboard, but your characters do not even echo.")
+        (dun-unix-interface))))
+
+        
 #+END_SRC
 
 * 
@@ -640,7 +644,6 @@ just try dropping it.")
       (dun-mprinc "I don't understand where you want me to go.\n")))
 
 #+END_SRC
-
 
 
 * 
@@ -811,10 +814,10 @@ just try dropping it.")
   huge rocks sliding down from the ceiling, and blocking your way out.\n")
 	    (setq dun-current-room misty-room)))))
 
-  ,#+END_SRC
+  #+END_SRC
+* 
 
-
-  ,#+BEGIN_SRC elisp
+  #+BEGIN_SRC elisp
 
   (defun dun-long (args)
     (setq dun-mode "long"))
@@ -938,136 +941,136 @@ just try dropping it.")
 	  (dun-mprincl
   "\n\nCongratulations.  You have won.  The wizard password is ‘moby’"))))
 
-  ,#+END_SRC
+  #+END_SRC
 
+* 
 
-
-  ,#+BEGIN_SRC elisp
-  (defun dun-help (args)
-    (dun-mprincl
-  "Welcome to dunnet (2.02), by Ron Schnell (ronnie@driver-aces.com - @RonnieSchnell).
-  Here is some useful information (read carefully because there are one
-  or more clues in here):
-  - If you have a key that can open a door, you do not need to explicitly
-    open it.  You may just use ‘in’ or walk in the direction of the door.
-
-  - If you have a lamp, it is always lit.
-
-  - You will not get any points until you manage to get treasures to a certain
-    place.  Simply finding the treasures is not good enough.  There is more
-    than one way to get a treasure to the special place.  It is also
-    important that the objects get to the special place *unharmed* and
-    ,*untarnished*.  You can tell if you have successfully transported the
-    object by looking at your score, as it changes immediately.  Note that
-    an object can become harmed even after you have received points for it.
-    If this happens, your score will decrease, and in many cases you can never
-    get credit for it again.
-
-  - You can save your game with the ‘save’ command, and use restore it
-    with the ‘restore’ command.
-
-  - There are no limits on lengths of object names.
-
-  - Directions are: north,south,east,west,northeast,southeast,northwest,
-                    southwest,up,down,in,out.
-
-  - These can be abbreviated: n,s,e,w,ne,se,nw,sw,u,d,in,out.
-
-  - If you go down a hole in the floor without an aid such as a ladder,
-    you probably won't be able to get back up the way you came, if at all.
-
-  - To run this game in batch mode (no Emacs window), use:
-       emacs -batch -l dunnet
-  NOTE: This game *should* be run in batch mode!
-
-  If you have questions or comments, please contact ronnie@driver-aces.com
-  My home page is http://www.driver-aces.com/ronnie.html
-  "))
-
-  (defun dun-flush (args)
-    (if (not (= dun-current-room bathroom))
-        (dun-mprincl "I see nothing to flush.")
-      (dun-mprincl "Whoooosh!!")
-      (dun-put-objs-in-treas (nth urinal dun-room-objects))
-      (dun-replace dun-room-objects urinal nil)))
-
-  (defun dun-piss (args)
-    (if (not (= dun-current-room bathroom))
-        (dun-mprincl "You can't do that here, don't even bother trying.")
-      (if (not dun-gottago)
-	  (dun-mprincl "I'm afraid you don't have to go now.")
-        (dun-mprincl "That was refreshing.")
-        (setq dun-gottago nil)
-        (dun-replace dun-room-objects urinal (append
-					      (nth urinal dun-room-objects)
-					      (list obj-URINE))))))
-
-
-  (defun dun-sleep (args)
-    (if (not (= dun-current-room bedroom))
-        (dun-mprincl
-  "You try to go to sleep while standing up here, but can't seem to do it.")
-      (setq dun-gottago t)
+  #+BEGIN_SRC elisp
+    (defun dun-help (args)
       (dun-mprincl
-  "As soon as you start to doze off you begin dreaming.  You see images of
-  workers digging caves, slaving in the humid heat.  Then you see yourself
-  as one of these workers.  While no one is looking, you leave the group
-  and walk into a room.  The room is bare except for a horseshoe
-  shaped piece of stone in the center.  You see yourself digging a hole in
-  the ground, then putting some kind of treasure in it, and filling the hole
-  with dirt again.  After this, you immediately wake up.")))
+    "Welcome to dunnet (2.02), by Ron Schnell (ronnie@driver-aces.com - @RonnieSchnell).
+    Here is some useful information (read carefully because there are one
+    or more clues in here):
+    - If you have a key that can open a door, you do not need to explicitly
+      open it.  You may just use ‘in’ or walk in the direction of the door.
 
-  (defun dun-break (obj)
-    (let (objnum)
-      (if (not (member obj-axe dun-inventory))
-	  (dun-mprincl "You have nothing you can use to break things.")
-        (when (setq objnum (dun-objnum-from-args-std obj))
-	  (if (member objnum dun-inventory)
-	      (progn
-	        (dun-mprincl
-  "You take the object in your hands and swing the axe.  Unfortunately, you miss
-  the object and slice off your hand.  You bleed to death.")
-	        (dun-die "an axe"))
-	    (if (not (or (member objnum (nth dun-current-room dun-room-objects))
-		         (member objnum
-			         (nth dun-current-room dun-room-silents))))
-	        (dun-mprincl "I don't see that here.")
-	      (if (= objnum obj-cable)
-		  (progn
-		    (dun-mprincl
-  "As you break the ethernet cable, everything starts to blur.  You collapse
-  for a moment, then straighten yourself up.
-  ")
-		    (dun-replace dun-room-objects gamma-computing-center
-			     (append
-			      (nth gamma-computing-center dun-room-objects)
-			      dun-inventory))
-		    (if (member obj-key dun-inventory)
-		        (progn
-			  (setq dun-inventory (list obj-key))
-			  (dun-remove-obj-from-room
-			   gamma-computing-center obj-key))
-		      (setq dun-inventory nil))
-		    (setq dun-current-room computer-room)
-		    (setq dun-ethernet nil)
-		    (dun-mprincl "Connection closed.")
-		    (dun-unix-interface))
-	        (if (< objnum 0)
-		    (progn
-		      (dun-mprincl "Your axe shatters into a million pieces.")
-		      (dun-remove-obj-from-inven obj-axe))
-		  (dun-mprincl "Your axe breaks it into a million pieces.")
-		  (dun-remove-obj-from-room dun-current-room objnum)))))))))
+    - If you have a lamp, it is always lit.
 
-  (defun dun-drive (args)
-    (if (not dun-inbus)
-        (dun-mprincl "You cannot drive when you aren't in a vehicle.")
-      (dun-mprincl "To drive while you are in the bus, just give a direction.")))
+    - You will not get any points until you manage to get treasures to a certain
+      place.  Simply finding the treasures is not good enough.  There is more
+      than one way to get a treasure to the special place.  It is also
+      important that the objects get to the special place *unharmed* and
+      ,*untarnished*.  You can tell if you have successfully transported the
+      object by looking at your score, as it changes immediately.  Note that
+      an object can become harmed even after you have received points for it.
+      If this happens, your score will decrease, and in many cases you can never
+      get credit for it again.
 
-  ,#+END_SRC
+    - You can save your game with the ‘save’ command, and use restore it
+      with the ‘restore’ command.
+
+    - There are no limits on lengths of object names.
+
+    - Directions are: north,south,east,west,northeast,southeast,northwest,
+                      southwest,up,down,in,out.
+
+    - These can be abbreviated: n,s,e,w,ne,se,nw,sw,u,d,in,out.
+
+    - If you go down a hole in the floor without an aid such as a ladder,
+      you probably won't be able to get back up the way you came, if at all.
+
+    - To run this game in batch mode (no Emacs window), use:
+         emacs -batch -l dunnet
+    NOTE: This game *should* be run in batch mode!
+
+    If you have questions or comments, please contact ronnie@driver-aces.com
+    My home page is http://www.driver-aces.com/ronnie.html
+    "))
+
+    (defun dun-flush (args)
+      (if (not (= dun-current-room bathroom))
+          (dun-mprincl "I see nothing to flush.")
+        (dun-mprincl "Whoooosh!!")
+        (dun-put-objs-in-treas (nth urinal dun-room-objects))
+        (dun-replace dun-room-objects urinal nil)))
+
+    (defun dun-piss (args)
+      (if (not (= dun-current-room bathroom))
+          (dun-mprincl "You can't do that here, don't even bother trying.")
+        (if (not dun-gottago)
+  	  (dun-mprincl "I'm afraid you don't have to go now.")
+          (dun-mprincl "That was refreshing.")
+          (setq dun-gottago nil)
+          (dun-replace dun-room-objects urinal (append
+  					      (nth urinal dun-room-objects)
+  					      (list obj-URINE))))))
 
 
-  ,#+BEGIN_SRC elisp
+    (defun dun-sleep (args)
+      (if (not (= dun-current-room bedroom))
+          (dun-mprincl
+    "You try to go to sleep while standing up here, but can't seem to do it.")
+        (setq dun-gottago t)
+        (dun-mprincl
+    "As soon as you start to doze off you begin dreaming.  You see images of
+    workers digging caves, slaving in the humid heat.  Then you see yourself
+    as one of these workers.  While no one is looking, you leave the group
+    and walk into a room.  The room is bare except for a horseshoe
+    shaped piece of stone in the center.  You see yourself digging a hole in
+    the ground, then putting some kind of treasure in it, and filling the hole
+    with dirt again.  After this, you immediately wake up.")))
+
+    (defun dun-break (obj)
+      (let (objnum)
+        (if (not (member obj-axe dun-inventory))
+  	  (dun-mprincl "You have nothing you can use to break things.")
+          (when (setq objnum (dun-objnum-from-args-std obj))
+  	  (if (member objnum dun-inventory)
+  	      (progn
+  	        (dun-mprincl
+    "You take the object in your hands and swing the axe.  Unfortunately, you miss
+    the object and slice off your hand.  You bleed to death.")
+  	        (dun-die "an axe"))
+  	    (if (not (or (member objnum (nth dun-current-room dun-room-objects))
+  		         (member objnum
+  			         (nth dun-current-room dun-room-silents))))
+  	        (dun-mprincl "I don't see that here.")
+  	      (if (= objnum obj-cable)
+  		  (progn
+  		    (dun-mprincl
+    "As you break the ethernet cable, everything starts to blur.  You collapse
+    for a moment, then straighten yourself up.
+    ")
+  		    (dun-replace dun-room-objects gamma-computing-center
+  			     (append
+  			      (nth gamma-computing-center dun-room-objects)
+  			      dun-inventory))
+  		    (if (member obj-key dun-inventory)
+  		        (progn
+  			  (setq dun-inventory (list obj-key))
+  			  (dun-remove-obj-from-room
+  			   gamma-computing-center obj-key))
+  		      (setq dun-inventory nil))
+  		    (setq dun-current-room computer-room)
+  		    (setq dun-ethernet nil)
+  		    (dun-mprincl "Connection closed.")
+  		    (dun-unix-interface))
+  	        (if (< objnum 0)
+  		    (progn
+  		      (dun-mprincl "Your axe shatters into a million pieces.")
+  		      (dun-remove-obj-from-inven obj-axe))
+  		  (dun-mprincl "Your axe breaks it into a million pieces.")
+  		  (dun-remove-obj-from-room dun-current-room objnum)))))))))
+
+    (defun dun-drive (args)
+      (if (not dun-inbus)
+          (dun-mprincl "You cannot drive when you aren't in a vehicle.")
+        (dun-mprincl "To drive while you are in the bus, just give a direction.")))
+
+  #+END_SRC
+
+* 
+  #+BEGIN_SRC elisp
 
   (defun dun-superb (args)
     (setq dun-mode 'dun-superb))
@@ -1147,8 +1150,7 @@ just try dropping it.")
 	      (dun-mprincl "I don't see that here.")
 	    (dun-mprincl "You cannot feed that."))))))
 
-  ,#+END_SRC
-
+  #+END_SRC
 
 * 
 
@@ -3204,7 +3206,6 @@ just try dropping it.")
     (dun-mprinc ".\n"))
 
   (defun dun-dos-nil (args))
-
 
 * 
 
