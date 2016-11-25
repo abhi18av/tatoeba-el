@@ -58,7 +58,7 @@
         line)
     (end-of-line)
     (if (and (not (= beg (point))) (not (< (point) beg))
-             (string= "=>> " (buffer-substring (- beg 1) beg)))
+             (string= ">" (buffer-substring (- beg 1) beg)))
         (progn
           (setq line (downcase (buffer-substring beg (point))))
           (princ line)
@@ -82,10 +82,10 @@
 
 
 ;;;###autoload
-(defun tatoeba ()
+(defun dunnet-abhi18av ()
   "Switch to *dungeon* buffer and start game."
   (interactive)
-  (switch-to-buffer "*tatoeba*")
+  (switch-to-buffer "*dungeon*")
   (dun-mode)
   (setq dun-dead nil)
   (setq room 0)
