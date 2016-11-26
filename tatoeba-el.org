@@ -29,7 +29,7 @@
 ;;; Code:
 
 
-*#+END_SRC
+#+END_SRC
 
 
 * access the log file

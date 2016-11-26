@@ -34,7 +34,7 @@
 ;;; Code:
 
 (defgroup dunnet nil
-  "Text adventure for Emacs."
+  "Learning Languages in Emacs"
   :prefix "dun-"
   :group 'games)
 
