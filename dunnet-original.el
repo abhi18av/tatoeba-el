@@ -82,7 +82,7 @@
 
 
 ;;;###autoload
-(defun dunnet-abhi18av ()
+(defun dunnet ()
   "Switch to *dungeon* buffer and start game."
   (interactive)
   (switch-to-buffer "*dungeon*")

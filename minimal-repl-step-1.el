@@ -14,9 +14,7 @@
 ;;;; Mode definitions for interactive mode
 
 (define-derived-mode dun-mode text-mode "lang-repl"
-  "Major mode for lang-repl."
-  (make-local-variable 'scroll-step)
-  (setq scroll-step 2))
+  "Major mode for lang-repl.")
 
 (defun dun-parse (arg)
   "Function called when return is pressed in interactive mode to parse line."
