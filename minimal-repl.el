@@ -10,9 +10,23 @@
   :prefix "lang-repl"
   :group 'games)
 
+(setq line-read nil)
 
-(setq line-read
-    (read-string "=> "))
+(defun line-read-function ()
+  (setq line-read
+    (read-string "=> ")))
 
 
-(message line-read)
+(line-read-function)
+
+
+(setq chopped-string
+      (s-split " " line-read))
+
+(progn
+  (switch-to-buffer "x")
+  (setf (buffer-string) chopped-string))
+
+                                        ;(message line-read)
+;(message-box line-read)
+
