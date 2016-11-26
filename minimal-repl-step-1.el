@@ -59,3 +59,11 @@
   (setq room 0)
   (dun-messages))
 
+(progn
+  (get-buffer "*x*")
+  (setf (buffer-string) " ")
+  (insert "Hello, Emacs!")
+
+  (insert (propertize "foo" 'font-lock-face '(:foreground "red")))
+
+;;  Enable the font lock in the bufferj

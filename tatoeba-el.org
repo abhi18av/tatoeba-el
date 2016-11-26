@@ -16,7 +16,7 @@
 #+END_SRC
 
 * various suggestions from authors 
-#+BEGIN_SRC elisp
+  #+BEGIN_SRC elisp
 ;;; dunnet.el --- text adventure for Emacs
 
 ;; This game can be run in batch mode.  To do this, use:
@@ -29,7 +29,7 @@
 ;;; Code:
 
 
-#+END_SRC
+*#+END_
 
 
 * access the log file
