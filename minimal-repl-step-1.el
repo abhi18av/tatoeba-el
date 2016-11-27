@@ -67,3 +67,20 @@
   (insert (propertize "foo" 'font-lock-face '(:foreground "red")))
 
 ;;  Enable the font lock in the bufferj
+
+
+
+(progn
+  (get-buffer "*x*")
+  (setq text "color")
+  (setf (buffer-string) " ")
+  (insert "Hello, Emacs!\n")
+  ( dotimes (x 10)
+  (insert (propertize (concat text "\t") 'font-lock-face '(:foreground "red")))))
+
+
+(defun double (ls)
+         (-map (lambda (x) (* 2 x))
+              ls))
+
+(dolist (x '(1 2 3)) (insert (number-to-string x)))
