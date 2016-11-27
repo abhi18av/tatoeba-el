@@ -20,13 +20,15 @@
 
 
 
-(defun dun-parse (arg)
+(defun parse (arg)
   "Function called when return is pressed in interactive mode to parse line."
   (interactive "*p")
   (beginning-of-line)
   (let ((beg (1+ (point)))
         line)
+
     (end-of-line)
+
     (if (and (not (= beg (point))) (not (< (point) beg))
              (string= ">" (buffer-substring (- beg 1) beg)))
         (progn
@@ -42,7 +44,7 @@
   (if dun-dead
       (text-mode)
     (if (eq dungeon-mode 'dungeon)
-        (progn
+   (progn
           (if (not (= room dun-current-room))
               (progn
                 (dun-describe-room dun-current-room)
