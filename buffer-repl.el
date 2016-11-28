@@ -7,22 +7,13 @@
 
 
 (defun tatoeba ()
-  (interactive)
   (switch-to-buffer "*tatoeba*")
-  (tatoeba-mode)
-  (tatoeba-welcome))
+  (tatoeba-mode))
 
-
-(setq font-lock-mode nil)
-
-(defun tatoeba-welcome ()
 (with-current-buffer "*tatoeba*"
-  (setf (buffer-string) " ")
-  (insert "Welcome to Tatoeba!\n")
-  (goto-char (point-max)))
-)
+  (message-box "Welcome to Tatoeba!\n"))
 
-(tatoeba)
+
 
 
 
