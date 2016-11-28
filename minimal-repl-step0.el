@@ -184,5 +184,40 @@
     (setq found nil)
     (dolist (x string-list)
       (if (string= x string)
-	  (setq found t))) found))
+	(setq found t))) found))
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+(setq prompt "=> ")
+(setq prompt-strings '("a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k"))
+
+
+
+;; (with-current-buffer "x"
+;;   (setf (buffer-string) " ")
+;;   (insert (nth (random (length prompt-strings)) prompt-strings))
+;;   )
+
+;; (dotimes (i 10)
+;; (with-current-buffer "x"
+;;   (insert " " (nth (random (length prompt-strings)) prompt-strings))
+;;   ))
+
+
+(defun analyzer (arg)
+  (prin1-to-string (arg)))
+
+
+(with-current-buffer "x"
+  (setf (buffer-string) " ")
+  (insert (nth (random (length prompt-strings)) prompt-strings))
+  (insert prompt)
+  (analyzer (buffer-string))
+  )
+
 
