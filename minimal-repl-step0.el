@@ -193,6 +193,7 @@
 
 
 
+
 (setq prompt "=> ")
 (setq prompt-strings '("a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k"))
 
@@ -209,15 +210,26 @@
 ;;   ))
 
 
-(defun analyzer (arg)
-  (prin1-to-string (arg)))
-
-
 (with-current-buffer "x"
   (setf (buffer-string) " ")
   (insert (nth (random (length prompt-strings)) prompt-strings))
   (insert prompt)
-  (analyzer (buffer-string))
+  (goto-char (point-max))
+
+  (progn
+    (setq key-read 0)
+    (while (/= key-read 13)
+      (setq key-read (read-key))
+  (insert (string key-read))
+))
+
+;; this portion will happen when carriage-return is pressed
+;;  (message (buffer-string))
+
+
   )
 
+
+;; (defun analyzer (arg)
+;;   (prin1-to-string (arg)))
 
