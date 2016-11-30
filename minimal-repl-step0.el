@@ -233,3 +233,7 @@
 ;; (defun analyzer (arg)
 ;;   (prin1-to-string (arg)))
 
+(mapc
+ (lambda (x) (
+              insert (propertize " color " 'face (list :foreground x))))
+ '("red" "green" "orange"))
