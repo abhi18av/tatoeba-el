@@ -11,7 +11,7 @@
 	(ww (append (cdr vv) (list first))))
     (set what ww)
     first))
-
+
 (defvar doctor-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "\n" 'doctor-read-print)
