@@ -1,3 +1,19 @@
+
+(defvar simple-repl--*print-space*)
+(defvar simple-repl--*print-upcase*)
+
+(defmacro simple-repl$ (what)
+  "Quoted arg form of simple-repl-$."
+  `(simple-repl-$ ',what))
+
+(defun simple-repl-$ (what)
+  "Return the car of a list, rotating the list each time."
+  (let* ((vv (symbol-value what))
+         (first (car vv))
+         (ww (append (cdr vv) (list first))))
+    (set what ww)
+    first))
+
 (defvar simple-repl-mode-map
   (let ((map (make-sparse-keymap)))
     (define-key map "\n" 'simple-repl-read-print)
@@ -15,7 +31,6 @@ reads the sentence before point, and prints the Doctor's answer."
 		 each time you are finished talking type RET twice")
   (insert "\n"))
 
-
 ;; Define equivalence classes of words that get treated alike.
 
 ;;;###autoload
@@ -58,107 +73,80 @@ Otherwise call the Doctor to parse preceding sentence."
 					       (forward-word 1)
 					       (point)))))
     (re-search-forward "\\Sw*")))
-
 ;; Main processing function for sentences that have been read.
 
 (defun simple-repl-doc ()
-  (cond
-   ((equal simple-repl-sent '(foo))
-    (simple-repl-type '(bar! (doc$ simple-repl--please) (doc$ simple-repl--continue) \.)))
+  (
+   (and
+    (eq (first simple-repl-sent) 'you)
+
+    (memq (second simple-repl-sent) simple-repl--abusewords))
+
+    (setq simple-repl-found (second simple-repl-sent))
+
+    (simple-repl-type (simple-repl$ simple-repl--abuselst))))
 
 
 
-   ((member simple-repl-sent simple-repl--howareyoulst)
-    (simple-repl-type '(i\'m ok \.  (doc$ simple-repl--describe) yourself \.)))
+ (defun make-simple-repl-variables
+
+     (set (make-local-variable 'simple-repl--abusewords)
+          '(boring bozo clown clumsy cretin dumb dummy
+                   fool foolish gnerd gnurd idiot jerk
+                   lose loser louse lousy luse luser
+                   moron nerd nurd oaf oafish reek
+                   stink stupid tool toolish twit)))
 
 
-   ((or (member simple-repl-sent '((good bye) (see you later) (i quit) (so long)
-			      (go away) (get lost)))
-	(memq (car simple-repl-sent)
-	      '(bye halt break quit done exit goodbye
-		    bye\, stop pause goodbye\, stop pause)))
-    (simple-repl-type (doc$ simple-repl--bye)))
+
+ (defun simple-repl-type (x)
+   (setq x (simple-repl-fix-2 x))
+   (simple-repl-txtype (simple-repl-assm x)))
 
 
-   ((and (eq (car simple-repl-sent) 'you)
-	 (memq (cadr simple-repl-sent) simple-repl--abusewords))
-    (setq simple-repl-found (cadr simple-repl-sent))
-    (simple-repl-type (doc$ simple-repl--abuselst)))
+ (defun simple-repl-txtype (ans)
+   "Output to buffer a list of symbols or strings as a sentence."
+   (setq simple-repl--*print-upcase* t simple-repl--*print-space* nil)
+   (mapc 'simple-repl-type-symbol ans)
+   (insert "\n"))
+
+(defun simple-repl-type-symbol (word)
+ "Output a symbol to the buffer with some fancy case and spacing hacks."
+ (setq word (simple-repl-make-string word))
+ (if (string-equal word "i") (setq word "I"))
+ (when simple-repl--*print-upcase*
+   (setq word (capitalize word))
+   (if simple-repl--*print-space* (insert " ")))
+ (cond ((or (string-match "^[.,;:?! ]" word)
+            (not simple-repl--*print-space*))
+        (insert word))
+       (t (insert ?\s word)))
+ (and auto-fill-function
+      (> (current-column) fill-column)
+      (apply auto-fill-function nil))
+ (setq simple-repl--*print-upcase* (string-match "[.?!]$" word)
+       simple-repl--*print-space* t))
 
 
-   ((eq (car simple-repl-sent) 'whatmeans)
-    (simple-repl-def (cadr simple-repl-sent)))
+
+(defun simple-repl-make-string (obj)
+  (cond ((stringp obj) obj)
+        ((symbolp obj) (symbol-name obj))
+        ((numberp obj) (int-to-string obj))
+        (t "")))
+
+;;;; the part is self-contained
+
+ (defun simple-repl-assm (proto)
+   (cond ((null proto) nil)
+         ((atom proto) (list proto))
+         ((atom (car proto))
+          (cons (car proto) (simple-repl-assm (cdr proto))))
+         (t (simple-repl-concat (simple-repl-assm (eval (car proto))) (simple-repl-assm (cdr proto))))))
 
 
-   ((equal simple-repl-sent '(parse))
-    (simple-repl-type (list  'subj '= simple-repl-subj ",  "
-			'verb '= simple-repl-verb "\n"
-			'object 'phrase '= simple-repl-obj ","
-			'noun 'form '=  simple-repl-object "\n"
-			'current 'keyword 'is simple-repl-found
-			", "
-			'most 'recent 'possessive
-			'is simple-repl-owner "\n"
-			'sentence 'used 'was
-			"..."
-			'(doc// simple-repl--bak))))
-
-
-   ((memq (car simple-repl-sent) '(are is do has have how when where who why))
-    (simple-repl-type (doc$ simple-repl--qlist)))
-
-
-   ;;   ((eq (car sent) 'forget)
-   ;;    (set (cadr sent) nil)
-   ;;    (simple-repl-type '((doc$ simple-repl--isee) (doc$ simple-repl--please)
-   ;;     (doc$ simple-repl--continue)\.)))
-
-   (t
-
-    (if (simple-repl-defq simple-repl-sent) (simple-repl-define simple-repl-sent simple-repl-found))
-
-    (if (> (length simple-repl-sent) 12)
-	(setq simple-repl-sent (simple-repl-shorten simple-repl-sent)))
-
-
-    (setq simple-repl-sent (simple-repl-correct-spelling
-		       (simple-repl-replace simple-repl-sent simple-repl--replist)))
-
-    (cond
-
-     ((and (not (memq 'me simple-repl-sent)) (not (memq 'i simple-repl-sent))
-		(memq 'am simple-repl-sent))
-	   (setq simple-repl-sent (simple-repl-replace simple-repl-sent '((am . (are)))))))
-
-
-    (cond
-
-     ((equal (car simple-repl-sent) 'yow) (simple-repl-zippy))
-
-	  ((< (length simple-repl-sent) 2)
-	   (cond ((eq (simple-repl-meaning (car simple-repl-sent)) 'howdy)
-		  (simple-repl-howdy))
-           (t (simple-repl-short))))
-
-	  (t
-	   (if (memq 'am simple-repl-sent)
-	       (setq simple-repl-sent (simple-repl-replace simple-repl-sent '((me . (i))))))
-
-     (setq simple-repl-sent (simple-repl-fixup simple-repl-sent))
-
-     (if (and (eq (car simple-repl-sent) 'do) (eq (cadr simple-repl-sent) 'not))
-	       (cond
-
-               ((zerop (random 3))
-		      (simple-repl-type '(are you (doc$ simple-repl--afraidof) that \?)))
-
-               ((zerop (random 2))
-		      (simple-repl-type '(don\'t tell me what to do \. i am the
-					    doctor here!))
-		      (simple-repl-rthing))
-
-               (t
-		      (simple-repl-type '((doc$ simple-repl--whysay) that i shouldn\'t
-				     (cddr simple-repl-sent)
-				     \?))))
-	     (simple-repl-go (simple-repl-wherego simple-repl-sent))))))))
+ (defun simple-repl-concat (x y)
+   "Like append, but force atomic arguments to be lists."
+   (append
+    (if (and x (atom x)) (list x) x)
+    (if (and y (atom y)) (list y) y)))
