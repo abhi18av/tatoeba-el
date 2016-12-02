@@ -1,6 +1,7 @@
 
 (defvar simple-repl--*print-space*)
 (defvar simple-repl--*print-upcase*)
+(defvar simple-repl--lincount)
 
 (defmacro simple-repl$ (what)
   "Quoted arg form of simple-repl-$."
@@ -76,20 +77,24 @@ Otherwise call the Doctor to parse preceding sentence."
 ;; Main processing function for sentences that have been read.
 
 (defun simple-repl-doc ()
-  (
-   (and
-    (eq (first simple-repl-sent) 'you)
+  (cond
+;    ((eq (first simple-repl-sent) 'you)
 
-    (memq (second simple-repl-sent) simple-repl--abusewords))
-
-    (setq simple-repl-found (second simple-repl-sent))
-
-    (simple-repl-type (simple-repl$ simple-repl--abuselst))))
+;    (memq (second simple-repl-sent) simple-repl--abusewords))
 
 
+    ((and (eq (car simple-repl-sent) 'you)
+          (memq (cadr simple-repl-sent) simple-repl--abusewords)))
 
- (defun make-simple-repl-variables
+     (t
+      (insert "the default dialogue from the doctor"))))
 
+
+
+
+ (defun make-simple-repl-variables ()
+   (set (make-local-variable 'simple-repl-sent) nil)
+    (set (make-local-variable 'simple-repl--lincount) 0)
      (set (make-local-variable 'simple-repl--abusewords)
           '(boring bozo clown clumsy cretin dumb dummy
                    fool foolish gnerd gnurd idiot jerk
