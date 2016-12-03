@@ -1,6 +1,8 @@
 
 
 (require 'dash)
+(require 'cl-lib)
+(require 's)
 
 (defvar simple-repl--*print-space*)
 (defvar simple-repl--*print-upcase*)
@@ -11,8 +13,8 @@
 
   (set (make-local-variable 'simple-repl-sent) nil)
   (set (make-local-variable 'simple-repl-found) nil)
-  (set (make-local-variable 'simple-repl--lincount) 0)
-  )
+  (set (make-local-variable 'simple-repl--lincount) 0))
+
 
 
 
@@ -94,7 +96,7 @@ Otherwise call the Doctor to parse preceding sentence."
 (defun simple-repl-doc ()
   (cond
 
-   ((eq (second simple-repl-sent) 'are )
+   ((-contains-p simple-repl-sent 'are )
     (insert "\nYou said Rrrrr\n"))
 
      (t
