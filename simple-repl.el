@@ -112,56 +112,61 @@ Otherwise call the Doctor to parse preceding sentence."
 
 
  (defun simple-repl-type (x)
-   (setq x (simple-repl-fix-2 x))
-   (simple-repl-txtype (simple-repl-assm x)))
-
-
- (defun simple-repl-txtype (ans)
-   "Output to buffer a list of symbols or strings as a sentence."
-   (setq simple-repl--*print-upcase* t simple-repl--*print-space* nil)
-   (mapc 'simple-repl-type-symbol ans)
-   (insert "\n"))
-
-(defun simple-repl-type-symbol (word)
- "Output a symbol to the buffer with some fancy case and spacing hacks."
- (setq word (simple-repl-make-string word))
- (if (string-equal word "i") (setq word "I"))
- (when simple-repl--*print-upcase*
-   (setq word (capitalize word))
-   (if simple-repl--*print-space* (insert " ")))
- (cond ((or (string-match "^[.,;:?! ]" word)
-            (not simple-repl--*print-space*))
-        (insert word))
-       (t (insert ?\s word)))
- (and auto-fill-function
-      (> (current-column) fill-column)
-      (apply auto-fill-function nil))
- (setq simple-repl--*print-upcase* (string-match "[.?!]$" word)
-       simple-repl--*print-space* t))
+   (insert x))
 
 
 
-(defun simple-repl-make-string (obj)
-  (cond ((stringp obj) obj)
-        ((symbolp obj) (symbol-name obj))
-        ((numberp obj) (int-to-string obj))
-        (t "")))
-
-;;;; the part is self-contained
-
- (defun simple-repl-assm (proto)
-   (cond ((null proto) nil)
-         ((atom proto) (list proto))
-         ((atom (car proto))
-          (cons (car proto) (simple-repl-assm (cdr proto))))
-         (t (simple-repl-concat (simple-repl-assm (eval (car proto))) (simple-repl-assm (cdr proto))))))
+;;  (defun simple-repl-type (x)
+;;    (setq x (simple-repl-fix-2 x))
+;;    (simple-repl-txtype (simple-repl-assm x)))
 
 
- (defun simple-repl-concat (x y)
-   "Like append, but force atomic arguments to be lists."
-   (append
-    (if (and x (atom x)) (list x) x)
-    (if (and y (atom y)) (list y) y)))
+;;  (defun simple-repl-txtype (ans)
+;;    "Output to buffer a list of symbols or strings as a sentence."
+;;    (setq simple-repl--*print-upcase* t simple-repl--*print-space* nil)
+;;    (mapc 'simple-repl-type-symbol ans)
+;;    (insert "\n"))
+
+;; (defun simple-repl-type-symbol (word)
+;;  "Output a symbol to the buffer with some fancy case and spacing hacks."
+;;  (setq word (simple-repl-make-string word))
+;;  (if (string-equal word "i") (setq word "I"))
+;;  (when simple-repl--*print-upcase*
+;;    (setq word (capitalize word))
+;;    (if simple-repl--*print-space* (insert " ")))
+;;  (cond ((or (string-match "^[.,;:?! ]" word)
+;;             (not simple-repl--*print-space*))
+;;         (insert word))
+;;        (t (insert ?\s word)))
+;;  (and auto-fill-function
+;;       (> (current-column) fill-column)
+;;       (apply auto-fill-function nil))
+;;  (setq simple-repl--*print-upcase* (string-match "[.?!]$" word)
+;;        simple-repl--*print-space* t))
+
+
+
+;; (defun simple-repl-make-string (obj)
+;;   (cond ((stringp obj) obj)
+;;         ((symbolp obj) (symbol-name obj))
+;;         ((numberp obj) (int-to-string obj))
+;;         (t "")))
+
+;; ;;;; the part is self-contained
+
+;;  (defun simple-repl-assm (proto)
+;;    (cond ((null proto) nil)
+;;          ((atom proto) (list proto))
+;;          ((atom (car proto))
+;;           (cons (car proto) (simple-repl-assm (cdr proto))))
+;;          (t (simple-repl-concat (simple-repl-assm (eval (car proto))) (simple-repl-assm (cdr proto))))))
+
+
+;;  (defun simple-repl-concat (x y)
+;;    "Like append, but force atomic arguments to be lists."
+;;    (append
+;;     (if (and x (atom x)) (list x) x)
+;;     (if (and y (atom y)) (list y) y)))
 
 
 
