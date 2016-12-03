@@ -7,6 +7,13 @@
 (defvar simple-repl--lincount)
 (defvar simple-repl-found)
 
+(defun make-simple-repl-variables ()
+
+  (set (make-local-variable 'simple-repl-sent) nil)
+  (set (make-local-variable 'simple-repl-found) nil)
+  (set (make-local-variable 'simple-repl--lincount) 0)
+  )
+
 
 
 (defmacro simple-repl$ (what)
@@ -98,11 +105,4 @@ Otherwise call the Doctor to parse preceding sentence."
 
 
 
-
-(defun make-simple-repl-variables ()
-
-  (set (make-local-variable 'simple-repl-sent) nil)
-  (set (make-local-variable 'simple-repl-found) nil)
-  (set (make-local-variable 'simple-repl--lincount) 0)
-  )
 
