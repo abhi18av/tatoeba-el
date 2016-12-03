@@ -1,17 +1,11 @@
 
+
+(require 'dash)
+
 (defvar simple-repl--*print-space*)
 (defvar simple-repl--*print-upcase*)
 (defvar simple-repl--lincount)
 (defvar simple-repl-found)
-
-
-
-(defun make-simple-repl-variables ()
-
-  (set (make-local-variable 'simple-repl-sent) nil)
-  (set (make-local-variable 'simple-repl-found) nil)
-  (set (make-local-variable 'simple-repl--lincount) 0)
-  )
 
 
 
@@ -69,7 +63,8 @@ Otherwise call the Doctor to parse preceding sentence."
   (setq simple-repl--lincount (1+ simple-repl--lincount))
   (simple-repl-doc)
   (insert "\n")
-  (setq simple-repl--bak simple-repl-sent))
+  (setq simple-repl--bak simple-repl-sent)
+  )
 
 (defun simple-repl-readin ()
   "Read a sentence.  Return it as a list of words."
@@ -88,21 +83,26 @@ Otherwise call the Doctor to parse preceding sentence."
     (re-search-forward "\\Sw*")))
 ;; Main processing function for sentences that have been read.
 
+
 (defun simple-repl-doc ()
   (cond
 
-   ((equal (second simple-repl-sent) 'are)
+   ((eq (second simple-repl-sent) 'are )
     (insert "\nYou said Rrrrr\n"))
 
-
-
      (t
-      (insert "the default dialogue from the doctor"))))
+      (insert "default"))))
 
 
 
 
- (defun simple-repl-type (x)
-   (insert x))
 
+
+
+(defun make-simple-repl-variables ()
+
+  (set (make-local-variable 'simple-repl-sent) nil)
+  (set (make-local-variable 'simple-repl-found) nil)
+  (set (make-local-variable 'simple-repl--lincount) 0)
+  )
 
