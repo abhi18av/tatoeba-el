@@ -38,9 +38,7 @@ Like Text mode with Auto Fill mode
 except that RET when point is after a newline, or LFD at any time,
 reads the sentence before point, and prints the Doctor's answer."
   (make-simple-repl-variables)
-  (turn-on-auto-fill)
-  (insert "I am Eliza - the psychotherapist. Please describe your problems and
-		 each time you are finished talking type RET twice")
+  (insert "In the beginning was the word ...")
   (insert "\n"))
 
 ;; Define equivalence classes of words that get treated alike.
@@ -95,7 +93,7 @@ Otherwise call the Doctor to parse preceding sentence."
     (insert "\nYou said Rrrrr\n"))
 
      (t
-      (insert "default"))))
+      (insert "default" "\n"))))
 
 
 
