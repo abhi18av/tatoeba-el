@@ -5,18 +5,20 @@
 - modularize the namespace
 - pcre-compatible regex ?
 
-#+BEGIN_SRC elisp :tangle simple-repl.el
+#+BEGIN_SRC elisp :tangle simple-repl-main.el
 (require 'dash)
 (require 'cl-lib)
 (require 's)
 
 
+(require 'simple-repl-readline)
+(require 'simple-repl-doc)
 #+END_SRC
 
 
 * Global  variables
 
-#+BEGIN_SRC elisp :tangle simple-repl.el
+#+BEGIN_SRC elisp :tangle simple-repl-main.el
 
 
 
@@ -48,7 +50,7 @@
 
 
 * The reason why the REPL works - key mappings
-#+BEGIN_SRC elisp  :tangle simple-repl.el
+#+BEGIN_SRC elisp  :tangle simple-repl-main.el
 
 (defvar simple-repl-mode-map
   (let ((map (make-sparse-keymap)))
@@ -61,7 +63,7 @@
 
 * Defining the entry-point of the program
 
-#+BEGIN_SRC elisp  :tangle simple-repl.el
+#+BEGIN_SRC elisp  :tangle simple-repl-main.el
 (define-derived-mode simple-repl-mode text-mode "simple-repl"
   "Major mode for running the Doctor (Eliza) program.
 Like Text mode with Auto Fill mode
@@ -88,7 +90,7 @@ reads the sentence before point, and prints the Doctor's answer."
 - Why do we need the ( interactive "*p") ?
 - Might not need to apply downcase to every word
 
-#+BEGIN_SRC elisp :tangle simple-repl.el
+#+BEGIN_SRC elisp :tangle simple-repl-readline.el
   (defun simple-repl-ret-or-read (arg)
     "Insert a newline if preceding character is not a newline.
   Otherwise call the main parsing function to parse preceding sentence."
@@ -135,7 +137,7 @@ reads the sentence before point, and prints the Doctor's answer."
 * Response generation
 - elaborate on this function
 
-#+BEGIN_SRC elisp :tangle simple-repl.el
+#+BEGIN_SRC elisp :tangle simple-repl-response.el
 
 ;; Main processing function for sentences that have been read.
 (defun simple-repl-doc ()
