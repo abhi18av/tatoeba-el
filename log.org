@@ -18,12 +18,10 @@
 
 #+BEGIN_SRC elisp
 
-(defvar simple-repl--lincount)
 
 (defun make-simple-repl-variables ()
 
-  (set (make-local-variable 'simple-repl-sent) nil)
-  (set (make-local-variable 'simple-repl--lincount) 0))
+  (set (make-local-variable 'simple-repl-sent) nil))
 #+END_SRC
 
 * Defining a macro to simplify the call to various long-named procedures  
@@ -87,43 +85,50 @@ reads the sentence before point, and prints the Doctor's answer."
 * Processing the response
 
 - Why do we need the ( interactive "*p") ?
+- Might not need to apply downcase to every word
 
 #+BEGIN_SRC elisp
+  (defun simple-repl-ret-or-read (arg)
+    "Insert a newline if preceding character is not a newline.
+  Otherwise call the main parsing function to parse preceding sentence."
+    (interactive "*p")
+    (if (= (preceding-char) ?\n)
+        (simple-repl-read-print)
+        
+        ; inserts (arg) number of newlines
+      (newline arg)))
 
-(defun simple-repl-ret-or-read (arg)
-  "Insert a newline if preceding character is not a newline.
-Otherwise call the main parsing function to parse preceding sentence."
-  (interactive "*p")
-  (if (= (preceding-char) ?\n)
-      (simple-repl-read-print)
-    (newline arg)))
+  (defun simple-repl-read-print ()
+    "Top level loop."
+    (interactive)
+    (setq simple-repl-sent (simple-repl-readin))
+    (insert "\n")
+    (simple-repl-doc)
+    (insert "\n"))
 
-(defun simple-repl-read-print ()
-  "Top level loop."
-  (interactive)
-  (setq simple-repl-sent (simple-repl-readin))
-  (insert "\n")
-  (setq simple-repl--lincount (1+ simple-repl--lincount))
-  (simple-repl-doc)
-  (insert "\n")
-  )
+  (defun simple-repl-readin ()
+    "Read a sentence.  Return it as a list of words."
+    (let (sentence)
+      (backward-sentence 1)
 
-(defun simple-repl-readin ()
-  "Read a sentence.  Return it as a list of words."
-  (let (sentence)
-    (backward-sentence 1)
-    (while (not (eobp))
-      (setq sentence (append sentence (list (simple-repl-read-token)))))
-    sentence))
+      ; the main loop that slowly builds the response-list word by word
+      (while (not (eobp))
+        (setq sentence (append sentence (list (simple-repl-read-token)))))
+      sentence))
 
-(defun simple-repl-read-token ()
-  "Read one word from buffer."
-  (prog1 (intern (downcase (buffer-substring (point)
-					     (progn
-					       (forward-word 1)
-					       (point)))))
-    (re-search-forward "\\Sw*")))
-;; Main processing function for sentences that have been read.
+  (defun simple-repl-read-token ()
+    "Read one word from buffer."
+    (prog1
+        (intern
+            (downcase
+             (buffer-substring (point)
+                               (progn
+                                 (forward-word 1)
+                                 (point)))))
+
+     ; This function moves the pointer to the new word boundary 
+       (re-search-forward "\\Sw*")))
+
 #+END_SRC
 
 * Response generation
@@ -131,6 +136,7 @@ Otherwise call the main parsing function to parse preceding sentence."
 
 #+BEGIN_SRC elisp
 
+;; Main processing function for sentences that have been read.
 (defun simple-repl-doc ()
   (cond
 
@@ -138,7 +144,7 @@ Otherwise call the main parsing function to parse preceding sentence."
     (insert "\nYou said Rrrrr!!\n"))
 
      (t
-      (insert "default"))))
+      (insert "I didn't quite get it!"))))
 
 #+END_SRC
 
