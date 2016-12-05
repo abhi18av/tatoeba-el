@@ -4,15 +4,11 @@
 (require 'cl-lib)
 (require 's)
 
-(defvar simple-repl--*print-space*)
-(defvar simple-repl--*print-upcase*)
 (defvar simple-repl--lincount)
-(defvar simple-repl-found)
 
 (defun make-simple-repl-variables ()
 
   (set (make-local-variable 'simple-repl-sent) nil)
-  (set (make-local-variable 'simple-repl-found) nil)
   (set (make-local-variable 'simple-repl--lincount) 0))
 
 
@@ -72,7 +68,6 @@ Otherwise call the Doctor to parse preceding sentence."
   (setq simple-repl--lincount (1+ simple-repl--lincount))
   (simple-repl-doc)
   (insert "\n")
-  (setq simple-repl--bak simple-repl-sent)
   )
 
 (defun simple-repl-readin ()

@@ -1,4 +1,10 @@
 
+** Need to import 
+
+*** namespace 
+
+*** modularize the namespace
+
 #+BEGIN_SRC elisp
 (require 'dash)
 (require 'cl-lib)
@@ -8,10 +14,10 @@
 #+END_SRC
 
 
+
+
 #+BEGIN_SRC elisp
 
-(defvar simple-repl--*print-space*)
-(defvar simple-repl--*print-upcase*)
 (defvar simple-repl--lincount)
 (defvar simple-repl-found)
 #+END_SRC
@@ -23,7 +29,6 @@
 (defun make-simple-repl-variables ()
 
   (set (make-local-variable 'simple-repl-sent) nil)
-  (set (make-local-variable 'simple-repl-found) nil)
   (set (make-local-variable 'simple-repl--lincount) 0))
 #+END_SRC
 
@@ -103,7 +108,6 @@ Otherwise call the Doctor to parse preceding sentence."
   (setq simple-repl--lincount (1+ simple-repl--lincount))
   (simple-repl-doc)
   (insert "\n")
-  (setq simple-repl--bak simple-repl-sent)
   )
 
 (defun simple-repl-readin ()
