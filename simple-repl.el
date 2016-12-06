@@ -1,10 +1,18 @@
+
+
 (require 'dash)
 (require 'cl-lib)
 (require 's)
 
+(defvar simple-repl--lincount)
+
 (defun make-simple-repl-variables ()
 
-  (set (make-local-variable 'simple-repl-sent) nil))
+  (set (make-local-variable 'simple-repl-sent) nil)
+  (set (make-local-variable 'simple-repl--lincount) 0))
+
+
+
 
 (defmacro simple-repl$ (what)
   "Quoted arg form of simple-repl-$."
@@ -33,7 +41,6 @@ reads the sentence before point, and prints the Doctor's answer."
   (insert "In the beginning was the word ...")
   (insert "\n"))
 
-
 ;; Define equivalence classes of words that get treated alike.
 
 ;;;###autoload
@@ -45,12 +52,10 @@ reads the sentence before point, and prints the Doctor's answer."
 
 (defun simple-repl-ret-or-read (arg)
   "Insert a newline if preceding character is not a newline.
-Otherwise call the main parsing function to parse preceding sentence."
+Otherwise call the Doctor to parse preceding sentence."
   (interactive "*p")
   (if (= (preceding-char) ?\n)
       (simple-repl-read-print)
-
-      ; inserts (arg) number of newlines
     (newline arg)))
 
 (defun simple-repl-read-print ()
@@ -58,38 +63,41 @@ Otherwise call the main parsing function to parse preceding sentence."
   (interactive)
   (setq simple-repl-sent (simple-repl-readin))
   (insert "\n")
+  (setq simple-repl--lincount (1+ simple-repl--lincount))
   (simple-repl-doc)
-  (insert "\n"))
+  (insert "\n")
+  )
 
 (defun simple-repl-readin ()
   "Read a sentence.  Return it as a list of words."
   (let (sentence)
     (backward-sentence 1)
-
-    ; the main loop that slowly builds the response-list word by word
     (while (not (eobp))
       (setq sentence (append sentence (list (simple-repl-read-token)))))
     sentence))
 
 (defun simple-repl-read-token ()
   "Read one word from buffer."
-  (prog1
-      (intern
-          (downcase
-           (buffer-substring (point)
-                             (progn
-                               (forward-word 1)
-                               (point)))))
-
-   ; This function moves the pointer to the new word boundary 
-     (re-search-forward "\\Sw*")))
-
+  (prog1 (intern (downcase (buffer-substring (point)
+					     (progn
+					       (forward-word 1)
+					       (point)))))
+    (re-search-forward "\\Sw*")))
 ;; Main processing function for sentences that have been read.
+
+
 (defun simple-repl-doc ()
   (cond
 
    ((-contains-p simple-repl-sent 'are )
-    (insert "\nYou said Rrrrr!!\n"))
+    (insert "\nYou said Rrrrr\n"))
 
      (t
-      (insert "I didn't quite get it!"))))
+      (insert "default" "\n"))))
+
+
+
+
+
+
+
