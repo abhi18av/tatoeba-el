@@ -12,7 +12,7 @@
 
 
 (require 'simple-repl-readline)
-(require 'simple-repl-doc)
+(require 'simple-repl-response)
 #+END_SRC
 
 
@@ -24,33 +24,14 @@
 
 (defun make-simple-repl-variables ()
 
-  (set (make-local-variable 'simple-repl-sent) nil))
+  (print "file-1"))
 #+END_SRC
 
-* Defining a macro to simplify the call to various long-named procedures  
 
-- remove the macro
-- rely on complete names
-
-
-#+BEGIN_SRC elisp   :tangle  simple-repl.el
-
-(defmacro simple-repl$ (what)
-  "Quoted arg form of simple-repl-$."
-  `(simple-repl-$ ',what))
-
-(defun simple-repl-$ (what)
-  "Return the car of a list, rotating the list each time."
-  (let* ((vv (symbol-value what))
-         (first (car vv))
-         (ww (append (cdr vv) (list first))))
-    (set what ww)
-    first))
-#+END_SRC
 
 
 * The reason why the REPL works - key mappings
-#+BEGIN_SRC elisp  :tangle simple-repl-main.el
+#+BEGIN_SRC elisp  :tangle file1.el
 
 (defvar simple-repl-mode-map
   (let ((map (make-sparse-keymap)))
@@ -137,17 +118,11 @@ reads the sentence before point, and prints the Doctor's answer."
 * Response generation
 - elaborate on this function
 
-#+BEGIN_SRC elisp :tangle simple-repl-response.el
+#+BEGIN_SRC elisp :tangle file3.el
 
 ;; Main processing function for sentences that have been read.
-(defun simple-repl-doc ()
-  (cond
-
-   ((-contains-p simple-repl-sent 'are )
-    (insert "\nYou said Rrrrr!!\n"))
-
-     (t
-      (insert "I didn't quite get it!"))))
+(defun file3 ()
+  (print "file-3"))
 
 #+END_SRC
 
