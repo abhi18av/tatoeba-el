@@ -77,7 +77,7 @@ Otherwise call the Doctor to parse preceding sentence."
   (insert "@ ")
   (setq simple-repl--lincount (1+ simple-repl--lincount))
   (simple-repl-doc)
-  (insert "\n")
+  (insert "=> ")
 
 ;;  ;; Reset the method
 ;;  (set-input-method "utf-8")
@@ -107,10 +107,10 @@ Otherwise call the Doctor to parse preceding sentence."
   (cond
 
    ((-contains-p simple-repl-sent 'are )
-    (insert (propertize "You said Rrrrr\n" 'face '(:foreground "red"))))
+    (insert  "You said Rrrrr\n"))
 
      (t
-      (insert (propertize "default\n" 'face '(:foreground "green"))))))
+      (insert "default\n" ))))
 
 
 
