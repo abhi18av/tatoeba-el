@@ -13,13 +13,13 @@
 
 
 
-
 (defmacro simple-repl$ (what)
   "Quoted arg form of simple-repl-$."
   `(simple-repl-$ ',what))
 
 (defun simple-repl-$ (what)
-  "Return the car of a list, rotating the list each time."
+  "Return the car of a list, rotating the list e=======
+ach time."
   (let* ((vv (symbol-value what))
          (first (car vv))
          (ww (append (cdr vv) (list first))))
@@ -38,8 +38,13 @@ Like Text mode with Auto Fill mode
 except that RET when point is after a newline, or LFD at any time,
 reads the sentence before point, and prints the Doctor's answer."
   (make-simple-repl-variables)
+ ; (setq font-lock-mode nil)
   (insert "In the beginning was the word ...")
   (insert "\n"))
+
+(add-hook 'simple-repl-mode-hook (lambda () 
+                             (font-lock-mode -1)) 'append)
+
 
 ;; Define equivalence classes of words that get treated alike.
 
@@ -90,10 +95,10 @@ Otherwise call the Doctor to parse preceding sentence."
   (cond
 
    ((-contains-p simple-repl-sent 'are )
-    (insert "\nYou said Rrrrr\n"))
+    (insert (propertize "You said Rrrrr\n" 'face '(:foreground "red"))))
 
      (t
-      (insert "default" "\n"))))
+      (insert (propertize "default\n" 'face '(:foreground "green"))))))
 
 
 
