@@ -67,21 +67,21 @@ Otherwise call the Doctor to parse preceding sentence."
   "Top level loop."
   (interactive)
 ;; change the input method
-  (set-input-method "latin-alt-postfix")
+;;  (set-input-method "latin-alt-postfix")
 
-  (toggle-input-method)
+;;  (toggle-input-method)
 
 
 
   (setq simple-repl-sent (simple-repl-readin))
-  (insert "\n")
+  (insert "@ ")
   (setq simple-repl--lincount (1+ simple-repl--lincount))
   (simple-repl-doc)
   (insert "\n")
 
 ;;  ;; Reset the method
-  (set-input-method "utf-8")
-  (toggle-input-method)
+;;  (set-input-method "utf-8")
+;;  (toggle-input-method)
 
   )
 
