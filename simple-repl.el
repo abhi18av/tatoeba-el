@@ -42,7 +42,7 @@ reads the sentence before point, and prints the Doctor's answer."
   (insert "In the beginning was the word ...")
   (insert "\n"))
 
-(add-hook 'simple-repl-mode-hook (lambda () 
+(add-hook 'simple-repl-mode-hook (lambda ()
                              (font-lock-mode -1)) 'append)
 
 
