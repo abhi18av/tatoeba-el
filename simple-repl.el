@@ -70,19 +70,14 @@
 
 
 
-
-
-
-
 (defun simple-repl-doc ()
   (cond
 
    ((-contains-p simple-repl-sent "are")
     (insert  "You said Rrrrr\n"))
 
-   (t (progn
-        (insert simple-repl-sent)
-      (insert "default\n" )))))
+   (t 
+      (insert "default\n" ))))
 
 
 
