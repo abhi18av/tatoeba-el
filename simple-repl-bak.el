@@ -2,7 +2,6 @@
 (require 'cl-lib)
 (require 's)
 
-(defvar simple-repl--lincount)
 
 (defun make-simple-repl-variables ()
 
@@ -22,7 +21,9 @@
 (define-derived-mode simple-repl-mode text-mode "simple-repl"
   (make-simple-repl-variables)
   (insert "In the beginning was the word ...")
-  (insert "\n@ "))
+ ; (insert (propertize "\n=>> " 'face '(:foreground "green" )))
+  (insert "\n=>> ")
+  )
 
 
 
@@ -63,10 +64,11 @@
   (setq simple-repl-sent (simple-repl-readin))
   (insert "\n# ")
 
-  (simple-repl-doc)
+  (simple-repl-response)
 
-  (insert "\n@ ")
+ ; (insert (propertize "\n=>> " 'face '(:foreground "green" )))
 
+  (insert "\n=>> ")
   )
 
 
@@ -90,11 +92,13 @@
 
 
 
-(defun simple-repl-doc ()
+(defun simple-repl-response ()
   (if
       (-contains-p (s-split " " sentence) "are")
-      (insert "Rrrrr")
-    (insert "hmm"))
+
+    (insert (propertize "rrr" 'face '(:foreground "red")))
+
+    (insert (propertize "hmm" 'face '(:foreground "skyblue"))))
 
     (insert "\n")
   )
