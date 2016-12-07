@@ -1,5 +1,3 @@
-
-
 (require 'dash)
 (require 'cl-lib)
 (require 's)
@@ -9,7 +7,7 @@
 (defun make-simple-repl-variables ()
 
   (set (make-local-variable 'simple-repl-sent) nil)
-  (set (make-local-variable 'simple-repl--lincount) 0))
+  )
 
 
 
@@ -20,13 +18,17 @@
     (define-key map "\r" 'simple-repl-ret-or-read)
     map))
 
+
 (define-derived-mode simple-repl-mode text-mode "simple-repl"
- (make-simple-repl-variables)
+  (make-simple-repl-variables)
   (insert "In the beginning was the word ...")
-  (insert "\n"))
+  (insert "\n@ "))
+
+
+
 
 (add-hook 'simple-repl-mode-hook (lambda ()
-                             (font-lock-mode -1)) 'append)
+                                   (font-lock-mode -1)) 'append)
 
 
 ;;;###autoload
@@ -35,56 +37,67 @@
   (switch-to-buffer "*simple-repl*")
   (simple-repl-mode))
 
+
+
+
+
+
+
+
+
 (defun simple-repl-ret-or-read (arg)
   (interactive "*p")
   (if (= (preceding-char) ?\n)
       (simple-repl-read-print)
     (newline arg)))
 
+
+
+
+
+
 (defun simple-repl-read-print ()
   "Top level loop."
   (interactive)
 
   (setq simple-repl-sent (simple-repl-readin))
-  (insert "\n ")
-  (setq simple-repl--lincount (1+ simple-repl--lincount))
+  (insert "\n# ")
+
   (simple-repl-doc)
-  (insert "\n ")
-  (end-of-buffer)
+
+  (insert "\n@ ")
+
   )
+
+
+
 
 
 (defvar sentence nil)
-(defvar sentence-word-list nil)
-
-
-
 (defun simple-repl-readin ()
-  (setq sentence (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+  (progn
+    (previous-line 1)
+    (setq sentence
+          (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 
-  (setq sentence-word-list
-        (s-split " " sentence))
+    (next-line 1)
+    )
 
-
-  sentence-word-list
+  sentence
   )
 
 
 
-;; (defun simple-repl-doc ()
-;;   (cond
 
-;;    ((-contains-p simple-repl-sent "are")
-;;     (insert  "You said Rrrrr\n"))
-
-;;    (t
-;;       (insert "default\n" ))))
 
 (defun simple-repl-doc ()
-  (insert (prin1-to-string simple-repl-sent))
-  (insert "\n"))
+  (if
+      (-contains-p (s-split " " sentence) "are")
+      (insert "Rrrrr")
+    (insert "hmm"))
 
-
+    (insert "\n")
+  )
 
 
 
