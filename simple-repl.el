@@ -22,7 +22,7 @@
 (define-derived-mode simple-repl-mode text-mode "simple-repl"
   (make-simple-repl-variables)
   (insert "In the beginning was the word ...")
-  (insert "\n@  "))
+  (insert "\n=>>  "))
 
 
 
@@ -65,7 +65,7 @@
 
   (simple-repl-response)
 
-  (insert "\n@ ")
+  (insert "\n=>> ")
 
   )
 
