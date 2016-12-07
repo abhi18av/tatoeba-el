@@ -1,5 +1,3 @@
-
-
 (require 'dash)
 (require 'cl-lib)
 (require 's)
@@ -9,7 +7,7 @@
 (defun make-simple-repl-variables ()
 
   (set (make-local-variable 'simple-repl-sent) nil)
-  (set (make-local-variable 'simple-repl--lincount) 0))
+  )
 
 
 
@@ -22,7 +20,7 @@
 
 
 (define-derived-mode simple-repl-mode text-mode "simple-repl"
- (make-simple-repl-variables)
+  (make-simple-repl-variables)
   (insert "In the beginning was the word ...")
   (insert "\n@ "))
 
@@ -30,7 +28,7 @@
 
 
 (add-hook 'simple-repl-mode-hook (lambda ()
-                             (font-lock-mode -1)) 'append)
+                                   (font-lock-mode -1)) 'append)
 
 
 ;;;###autoload
@@ -38,10 +36,6 @@
   (interactive)
   (switch-to-buffer "*simple-repl*")
   (simple-repl-mode))
-
-
-
-
 
 
 
@@ -66,12 +60,14 @@
   "Top level loop."
   (interactive)
 
-  (setq simple-repl-sent (simple-repl-readin))
+;  (setq simple-repl-sent (simple-repl-readin))
+(setq simple-repl-sent (simple-repl-prev-line-content))
   (insert "\n# ")
 
   (simple-repl-doc)
 
   (insert "\n@ ")
+
   )
 
 
@@ -90,11 +86,22 @@
 
 
 (defun simple-repl-doc ()
-  (insert (prin1-to-string simple-repl-sent))
+
+  (insert (simple-repl-prev-line-content))
+
   (insert "\n")
   )
 
 
+(defvar previous-line-content nil)
+(defun simple-repl-prev-line-content ()
+  (progn
+   (previous-line 2)
+   (setq previous-line-content
+         (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 
+   (next-line 2)
+   (insert "\n"))
 
-
+  previous-line-content
+  )
