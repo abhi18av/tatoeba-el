@@ -50,7 +50,7 @@
   (setq simple-repl--lincount (1+ simple-repl--lincount))
   (simple-repl-doc)
   (insert "\n ")
-
+  (end-of-buffer)
   )
 
 
@@ -65,21 +65,24 @@
   (setq sentence-word-list
         (s-split " " sentence))
 
+
   sentence-word-list
   )
 
 
 
+;; (defun simple-repl-doc ()
+;;   (cond
+
+;;    ((-contains-p simple-repl-sent "are")
+;;     (insert  "You said Rrrrr\n"))
+
+;;    (t
+;;       (insert "default\n" ))))
+
 (defun simple-repl-doc ()
-  (cond
-
-   ((-contains-p simple-repl-sent "are")
-    (insert  "You said Rrrrr\n"))
-
-   (t 
-      (insert "default\n" ))))
-
-
+  (insert (prin1-to-string simple-repl-sent))
+  (insert "\n"))
 
 
 
