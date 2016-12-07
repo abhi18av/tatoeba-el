@@ -13,18 +13,6 @@
 
 
 
-(defmacro simple-repl$ (what)
-  "Quoted arg form of simple-repl-$."
-  `(simple-repl-$ ',what))
-
-(defun simple-repl-$ (what)
-  (let* ((vv (symbol-value what))
-         (first (car vv))
-         (ww (append (cdr vv) (list firs
-  (cond
-t))))
-    (set what ww)
-    first)))
 
 (defvar simple-repl-mode-map
   (let ((map (make-sparse-keymap)))
@@ -58,10 +46,10 @@ t))))
   (interactive)
 
   (setq simple-repl-sent (simple-repl-readin))
-  (insert "\n>>")
+  (insert "\n ")
   (setq simple-repl--lincount (1+ simple-repl--lincount))
   (simple-repl-doc)
-  (insert "\n@")
+  (insert "\n ")
 
   )
 
@@ -73,6 +61,7 @@ t))))
 
 (defun simple-repl-readin ()
   (setq sentence (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+
   (setq sentence-word-list
         (s-split " " sentence))
 
@@ -91,8 +80,9 @@ t))))
    ((-contains-p simple-repl-sent "are")
     (insert  "You said Rrrrr\n"))
 
-     (t
-      (insert "default\n" ))))
+   (t (progn
+        (insert simple-repl-sent)
+      (insert "default\n" )))))
 
 
 
