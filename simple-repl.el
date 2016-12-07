@@ -2,7 +2,6 @@
 (require 'cl-lib)
 (require 's)
 
-(defvar simple-repl--lincount)
 
 (defun make-simple-repl-variables ()
 
