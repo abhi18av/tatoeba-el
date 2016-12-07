@@ -61,7 +61,6 @@
   (interactive)
 
   (setq simple-repl-sent (simple-repl-readin))
-;(setq simple-repl-sent (simple-repl-prev-line-content))
   (insert "\n# ")
 
   (simple-repl-doc)
@@ -76,10 +75,6 @@
 
 (defvar sentence nil)
 (defun simple-repl-readin ()
-;  (setq sentence (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-
-
-
   (progn
     (previous-line 1)
     (setq sentence
@@ -87,9 +82,6 @@
 
     (next-line 1)
     )
-
-
-
 
   sentence
   )
@@ -99,27 +91,13 @@
 
 
 (defun simple-repl-doc ()
+  (if
+      (-contains-p (s-split " " sentence) "are")
+      (insert "Rrrrr")
+    (insert "hmm"))
 
-
-;  (insert (simple-repl-prev-line-content))
-
-;  (insert previous-line-content)
-  (insert sentence)
-  (insert "\n")
+    (insert "\n")
   )
 
 
 
-
-(defvar previous-line-content nil)
-(defun simple-repl-prev-line-content ()
-  (progn
-   (previous-line 2)
-   (setq previous-line-content
-         (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-
-   (next-line 2)
-   )
-
-  previous-line-content
-  )
