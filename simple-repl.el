@@ -8,6 +8,10 @@
   (set (make-local-variable 'simple-repl-sent) nil)
   )
 
+(add-hook 'simple-repl-mode-hook (lambda ()
+                                   (font-lock-mode -1)) 'append)
+
+
 
 
 
@@ -21,15 +25,17 @@
 (define-derived-mode simple-repl-mode text-mode "simple-repl"
   (make-simple-repl-variables)
   (insert "In the beginning was the word ...")
- ; (insert (propertize "\n=>> " 'face '(:foreground "green" )))
-  (insert "\n=>> ")
+ ;  (insert "\n=>> ")
+
+  (progn
+    (insert (propertize "\n=>>" 'face '(:foreground "green" )))
+    (insert " "))
+
+
   )
 
 
 
-
-(add-hook 'simple-repl-mode-hook (lambda ()
-                                   (font-lock-mode -1)) 'append)
 
 
 ;;;###autoload
@@ -62,13 +68,19 @@
   (interactive)
 
   (setq simple-repl-sent (simple-repl-readin))
-  (insert "\n# ")
+
+;  (insert "\n# ")
+  (progn 
+    (insert (propertize "\n#" 'face '(:foreground "purple" )))
+    (insert " "))
+
 
   (simple-repl-response)
+  (progn 
+  (insert (propertize "\n=>>" 'face '(:foreground "green" )))
+  (insert " "))
 
- ; (insert (propertize "\n=>> " 'face '(:foreground "green" )))
-
-  (insert "\n=>> ")
+  ;(insert "\n=>> ")
   )
 
 
