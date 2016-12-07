@@ -24,7 +24,7 @@
 (define-derived-mode simple-repl-mode text-mode "simple-repl"
  (make-simple-repl-variables)
   (insert "In the beginning was the word ...")
-  (insert "\n"))
+  (insert "\n@ "))
 
 
 
@@ -58,33 +58,39 @@
     (newline arg)))
 
 
+
+
+
+
 (defun simple-repl-read-print ()
   "Top level loop."
   (interactive)
 
   (setq simple-repl-sent (simple-repl-readin))
-  (insert "\n ")
+  (insert "\n# ")
 
   (simple-repl-doc)
 
-  (insert "\n")
-(next-line)
+  (insert "\n@ ")
   )
+
+
+
 
 
 (defvar sentence nil)
-
-
 (defun simple-repl-readin ()
   (setq sentence (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-sentence
+
+  sentence
   )
+
+
+
 
 
 (defun simple-repl-doc ()
   (insert (prin1-to-string simple-repl-sent))
-
-  (insert (prin1-to-string (second  (sentence-at-point))))
   (insert "\n")
   )
 
