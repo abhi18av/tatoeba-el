@@ -60,8 +60,8 @@
   "Top level loop."
   (interactive)
 
-;  (setq simple-repl-sent (simple-repl-readin))
-(setq simple-repl-sent (simple-repl-prev-line-content))
+  (setq simple-repl-sent (simple-repl-readin))
+;(setq simple-repl-sent (simple-repl-prev-line-content))
   (insert "\n# ")
 
   (simple-repl-doc)
@@ -76,7 +76,20 @@
 
 (defvar sentence nil)
 (defun simple-repl-readin ()
-  (setq sentence (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+;  (setq sentence (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+
+
+
+  (progn
+    (previous-line 1)
+    (setq sentence
+          (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+
+    (next-line 1)
+    )
+
+
+
 
   sentence
   )
@@ -87,10 +100,15 @@
 
 (defun simple-repl-doc ()
 
-  (insert (simple-repl-prev-line-content))
 
+;  (insert (simple-repl-prev-line-content))
+
+;  (insert previous-line-content)
+  (insert sentence)
   (insert "\n")
   )
+
+
 
 
 (defvar previous-line-content nil)
@@ -101,7 +119,7 @@
          (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 
    (next-line 2)
-   (insert "\n"))
+   )
 
   previous-line-content
   )
