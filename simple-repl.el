@@ -74,10 +74,10 @@ Otherwise call the Doctor to parse preceding sentence."
 
 
   (setq simple-repl-sent (simple-repl-readin))
-  (insert "@ ")
+  (insert "\n@ ")
   (setq simple-repl--lincount (1+ simple-repl--lincount))
   (simple-repl-doc)
-  (insert "=> ")
+  (insert "\n=> ")
 
 ;;  ;; Reset the method
 ;;  (set-input-method "utf-8")
@@ -85,22 +85,45 @@ Otherwise call the Doctor to parse preceding sentence."
 
   )
 
-(defun simple-repl-readin ()
-  "Read a sentence.  Return it as a list of words."
-  (let (sentence)
-    (backward-sentence 1)
-    (while (not (eobp))
-      (setq sentence (append sentence (list (simple-repl-read-token)))))
-    sentence))
+;; (defun simple-repl-readin ()
+;;   "Read a sentence.  Return it as a list of words."
+;;   (let (sentence)
+;;     (backward-sentence 1)
+;;     (while (not (eobp))
+;;       (setq sentence (append sentence (list (simple-repl-read-token)))))
+;;     sentence))
 
-(defun simple-repl-read-token ()
-  "Read one word from buffer."
-  (prog1 (intern (downcase (buffer-substring (point)
-					     (progn
-					       (forward-word 1)
-					       (point)))))
-    (re-search-forward "\\Sw*")))
+;; (defun simple-repl-read-token ()
+;;   "Read one word from buffer."
+;;   (prog1 (intern (downcase (buffer-substring (point)
+;; 					     (progn
+;; 					       (forward-word 1)
+;; 					       (point)))))
+;;     (re-search-forward "\\Sw*")))
 ;; Main processing function for sentences that have been read.
+
+
+  (defun simple-repl-readin ()
+    "Read a sentence.  Return it as a list of words."
+    (let (sentence)
+      (setq sentence (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+
+  (setq sentence
+        (-map (lambda (x) ( make-symbol x)) (s-split-words (sentence)))))) 
+
+
+(with-current-buffer "*simple-repl*"
+
+  (defvar sentence nil)
+  (defvar sentence-word-list nil)
+
+  (setq sentence (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
+
+  (setq sentence-word-list
+        (-map (lambda (x) ( make-symbol x)) (s-split-words sentence))))
+
+
+
 
 
 (defun simple-repl-doc ()
