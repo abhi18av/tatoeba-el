@@ -103,24 +103,29 @@ Otherwise call the Doctor to parse preceding sentence."
 ;; Main processing function for sentences that have been read.
 
 
-  (defun simple-repl-readin ()
-    "Read a sentence.  Return it as a list of words."
-    (let (sentence)
-      (setq sentence (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 
-  (setq sentence
-        (-map (lambda (x) ( make-symbol x)) (s-split-words (sentence)))))) 
+(defvar sentence nil)
+(defvar sentence-word-list nil)
 
 
-(with-current-buffer "*simple-repl*"
 
-  (defvar sentence nil)
-  (defvar sentence-word-list nil)
-
+(defun simple-repl-readin ()
   (setq sentence (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
 
+;  sentence
+
+
+
+; (setq sentence-word-list
+;      (-map (lambda (x) ( make-symbol x)) (s-split-words sentence)))
+
   (setq sentence-word-list
-        (-map (lambda (x) ( make-symbol x)) (s-split-words sentence))))
+        (s-split " " sentence))
+
+  sentence-word-list
+  )
+
+
 
 
 
@@ -129,7 +134,7 @@ Otherwise call the Doctor to parse preceding sentence."
 (defun simple-repl-doc ()
   (cond
 
-   ((-contains-p simple-repl-sent 'are )
+   ((-contains-p simple-repl-sent "are")
     (insert  "You said Rrrrr\n"))
 
      (t
