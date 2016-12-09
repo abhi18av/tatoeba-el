@@ -160,18 +160,15 @@
 (defun print-incorrect-indices ( list-of-indices split-sentence1 split-sentence2)
 
   (dolist (i list-of-indices)
-    (insert "\n" (elt split-sentence1 i) " => " (elt split-sentence2 i))
-  )
-
-  )
+    (insert-string "\n"
+                   (propertize (elt split-sentence1 i) 'face '(:foreground "red"))
+                   " => "
+                   (propertize (elt split-sentence2 i) 'face '(:foreground "green")))))
 
 
 (print-incorrect-indices (
-                           (correct-or-return-incorrect-indices split-sentence1 split-sentence2)
+                           (correct-or-return-incorrect-indices s1 s3)
 
-                          split-sentence1
-                          split-sentence2))
-
-
+                          s1 s3))
 
 )
