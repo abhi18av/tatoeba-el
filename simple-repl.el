@@ -105,9 +105,8 @@
 
 
 (defun simple-repl-response ()
-  (
 ;; replace this with a simple loop that compares the sentences/words and returns the correction
-   if
+   (if
       (-contains-p (s-split " " sentence) "are")
 
 
@@ -118,12 +117,23 @@
 
 
 
+;;;;;;;;;;;;
 
 
+
+(with-current-buffer "*scratch*"
+
+(defvar s1 '("a" "b" "c"))
+
+(defvar s2 '("a" "b" "c"))
+
+(defvar s3 '(1 2 3))
+
+(defvar s4 '("a" 2 3 ))
 
 ;; also need to check if the response is of the correct length
 
-(defun sentence-check (split-sentence1 split-sentence2)
+(defun correct-or-return-incorrect-indices (split-sentence1 split-sentence2)
 
   (defvar incorrect-word-index nil)
 
@@ -140,16 +150,18 @@
 
           (setq incorrect-word-index (cons i incorrect-word-index)))))
 
-  (print (reverse incorrect-word-index))
+;  (print (reverse incorrect-word-index))
+  (print-incorrect-indices ((reverse incorrect-word-index) split-sentence1 split-sentence2))
+
 
   (setq incorrect-word-index nil)
   )
 
 
-(defvar s1 '("a" "b" "c"))
+(defun print-incorrect-indices ( list-of-indices split-sentence1 split-sentence2)
 
-(defvar s2 '("a" "b" "c"))
+  (dolist (i list-of-indices)
+    insert (elt split-sentence1 i) " => " (elt split-sentence2 i))
+  )
 
-(defvar s3 '(1 2 3))
-
-(defvar s4 '("a" 2 3 ))
+)
