@@ -117,6 +117,10 @@
   )
 
 
+
+
+
+
 ;; also need to check if the response is of the correct length
 
 (defun sentence-check (split-sentence1 split-sentence2)
@@ -136,7 +140,7 @@
 
           (setq incorrect-word-index (cons i incorrect-word-index)))))
 
-  (print incorrect-word-index)
+  (print (reverse incorrect-word-index))
 
   (setq incorrect-word-index nil)
   )
@@ -147,3 +151,5 @@
 (defvar s2 '("a" "b" "c"))
 
 (defvar s3 '(1 2 3))
+
+(defvar s4 '("a" 2 3 ))
