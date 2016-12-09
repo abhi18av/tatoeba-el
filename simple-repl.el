@@ -105,12 +105,86 @@
 
 
 (defun simple-repl-response ()
-  (if
+;; replace this with a simple loop that compares the sentences/words and returns the correction
+   (if
       (-contains-p (s-split " " sentence) "are")
 
-    (insert (propertize "rrr" 'face '(:foreground "red")))
 
     (insert (propertize "hmm" 'face '(:foreground "skyblue"))))
 
     (insert "\n")
   )
+
+
+
+;;;;;;;;;;;;
+
+
+
+(with-current-buffer "*scratch*"
+
+(defvar s1 '("a" "b" "c"))
+
+(defvar s2 '("a" "b" "c"))
+
+(defvar s3 '(1 2 3))
+
+(defvar s4 '("a" 2 3 ))
+
+;; also need to check if the response is of the correct length
+
+(defun correct-or-return-incorrect-indices (split-sentence1 split-sentence2)
+
+;  (let (incorrect-word-index nil)
+
+  (setq-default incorrect-word-index nil)
+
+  (if
+      (equalp split-sentence1 split-sentence2 )
+      (print "correct")
+    ;; the case to pinpoint which words are wrong
+    (dotimes (i (length split-sentence1))
+      (if
+          (not
+           (equalp
+            (elt split-sentence1 i)
+            (elt split-sentence2 i)))
+
+          (setq incorrect-word-index (cons i incorrect-word-index)))))
+
+(reverse incorrect-word-index)
+;  (setq incorrect-word-index nil)
+  )
+
+
+(defun print-incorrect-indices ( list-of-indices split-sentence1 split-sentence2)
+
+  (dolist (i list-of-indices)
+    (insert-string "\n"
+                   (propertize (elt split-sentence1 i) 'face '(:foreground "red"))
+                   " => "
+                   (propertize (elt split-sentence2 i) 'face '(:foreground "green")))))
+
+
+(print-incorrect-indices (
+                           (correct-or-return-incorrect-indices s1 s3)
+
+                          s1 s3))
+
+
+(defun convert-non-numeric-to-string (ls)
+  (setq-default stringified nil)
+  ( dolist (i ls)
+
+    ;; convert this to consider cases like << 15:10 >>
+    ;; use cond
+    (if (stringp i)
+        (setq stringified (cons stringified i))
+      (setq stringified (cons stringified
+            (-map (lambda (x) (number-to-string x))  (list i))))))
+  stringified)
+
+
+
+(convert-non-numeric-to-string '("a" "12 3 4" 14:64)))
+)
