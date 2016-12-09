@@ -105,12 +105,45 @@
 
 
 (defun simple-repl-response ()
-  (if
+  (
+;; replace this with a simple loop that compares the sentences/words and returns the correction
+   if
       (-contains-p (s-split " " sentence) "are")
 
-    (insert (propertize "rrr" 'face '(:foreground "red")))
 
     (insert (propertize "hmm" 'face '(:foreground "skyblue"))))
 
     (insert "\n")
   )
+
+
+;; also need to check if the response is of the correct length
+
+(defun sentence-check (split-sentence1 split-sentence2)
+
+  (defvar incorrect-word-index nil)
+
+  (if
+      (equalp split-sentence1 split-sentence2 )
+      (print "correct")
+    ;; the case to pinpoint which words are wrong
+    (dotimes (i (length split-sentence1))
+      (if
+          (not
+           (equalp
+            (elt split-sentence1 i)
+            (elt split-sentence2 i)))
+
+          (setq incorrect-word-index (cons i incorrect-word-index)))))
+
+  (print incorrect-word-index)
+
+  (setq incorrect-word-index nil)
+  )
+
+
+(defvar s1 '("a" "b" "c"))
+
+(defvar s2 '("a" "b" "c"))
+
+(defvar s3 '(1 2 3))
