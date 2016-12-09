@@ -171,4 +171,20 @@
 
                           s1 s3))
 
+
+(defun convert-non-numeric-to-string (ls)
+  (setq-default stringified nil)
+  ( dolist (i ls)
+
+    ;; convert this to consider cases like << 15:10 >>
+    ;; use cond
+    (if (stringp i)
+        (setq stringified (cons stringified i))
+      (setq stringified (cons stringified
+            (-map (lambda (x) (number-to-string x))  (list i))))))
+  stringified)
+
+
+
+(convert-non-numeric-to-string '("a" "12 3 4" 14:64)))
 )
