@@ -70,13 +70,13 @@
   (setq simple-repl-sent (simple-repl-readin))
 
 ;  (insert "\n# ")
-  (progn 
+  (progn
     (insert (propertize "\n#" 'face '(:foreground "purple" )))
     (insert " "))
 
 
   (simple-repl-response)
-  (progn 
+  (progn
   (insert (propertize "\n=>>" 'face '(:foreground "green" )))
   (insert " "))
 
@@ -114,6 +114,3 @@
 
     (insert "\n")
   )
-
-
-
