@@ -135,7 +135,9 @@
 
 (defun correct-or-return-incorrect-indices (split-sentence1 split-sentence2)
 
-  (defvar incorrect-word-index nil)
+;  (let (incorrect-word-index nil)
+
+  (setq-default incorrect-word-index nil)
 
   (if
       (equalp split-sentence1 split-sentence2 )
@@ -150,18 +152,26 @@
 
           (setq incorrect-word-index (cons i incorrect-word-index)))))
 
-;  (print (reverse incorrect-word-index))
-  (print-incorrect-indices ((reverse incorrect-word-index) split-sentence1 split-sentence2))
-
-
-  (setq incorrect-word-index nil)
+(reverse incorrect-word-index)
+;  (setq incorrect-word-index nil)
   )
 
 
 (defun print-incorrect-indices ( list-of-indices split-sentence1 split-sentence2)
 
   (dolist (i list-of-indices)
-    insert (elt split-sentence1 i) " => " (elt split-sentence2 i))
+    (insert "\n" (elt split-sentence1 i) " => " (elt split-sentence2 i))
   )
+
+  )
+
+
+(print-incorrect-indices (
+                           (correct-or-return-incorrect-indices split-sentence1 split-sentence2)
+
+                          split-sentence1
+                          split-sentence2))
+
+
 
 )
