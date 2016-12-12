@@ -1,7 +1,8 @@
 (require 'dash)
 (require 'cl-lib)
 (require 's)
-
+(require 'ht)
+(require 'json)
 
 (defun make-simple-repl-variables ()
 
