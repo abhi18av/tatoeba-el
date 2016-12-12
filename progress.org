@@ -1,0 +1,8 @@
+* 12 December 
+
+** Ran into trouble with encoding the chinese characters in json
+- tried `irb` , `ipyrepl` ( some success ) and the simple python repl ( python and python3 ) works fine but I need to convert them to json.dumps which is an overhead!
+
+** solved the problem by switching over to the java powered jruby and everything works smoothly!
+
+** And luckily, all the functions work just fine with the ClojureScript `lumo` repl! Yuppee - JSON won't be a problem from now on.
