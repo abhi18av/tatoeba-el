@@ -1,0 +1,21 @@
+{
+
+{1 :
+	{
+		{"zh" : "这 本 书 是 我 的"},
+		{"en" : “this is my book"} 
+	},},
+
+{2:
+	{
+		{"zh" : "晚上 好"},
+		{"en" : "good morning"} 
+	},},
+
+{3:
+	{
+		{"zh" : "见天 天气 很 好" },
+		{"en" : "the weather is very nice today"} 
+	},}
+
+}
