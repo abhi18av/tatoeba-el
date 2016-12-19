@@ -33,3 +33,8 @@
 )
 
 
+;; this one uses equal instead of eq
+(plist-get '(foo 4) 'foo)
+
+
+
