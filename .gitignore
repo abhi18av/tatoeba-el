@@ -2,3 +2,12 @@
 .#snippets.el
 
 .orientdb_history
+
+clj/node_modules
+clj/.lein-repl-history
+
+clj/target/classes/META-INF/maven/clj/clj/pom.properties
+
+clj/target/stale/leiningen.core.classpath.extract-native-dependencies
+
+clj/.hgignore
