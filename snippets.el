@@ -25,3 +25,16 @@
 
 
 
+(progn
+
+  (setq a-ls '(("a". 1) ("b". 2) ("c". 3)))
+
+  (setq p-ls '("a" 1 "b" 2 "c" 3))
+)
+
+
+;; this one uses equal instead of eq
+(plist-get '(foo 4) 'foo)
+
+
+
