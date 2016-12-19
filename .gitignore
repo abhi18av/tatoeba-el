@@ -11,3 +11,6 @@ clj/target/classes/META-INF/maven/clj/clj/pom.properties
 clj/target/stale/leiningen.core.classpath.extract-native-dependencies
 
 clj/.hgignore
+
+
+.#*
