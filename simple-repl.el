@@ -1,6 +1,8 @@
 (require 'dash)
 (require 'cl-lib)
 (require 's)
+(require 'ht)
+
 
 
 (defun make-simple-repl-variables ()
@@ -139,8 +141,3 @@
     (insert "\n")
   )
 
-
-;; (defvar response-list  '("one" 1 "two" 2 "three" 3))
-;; response-list
-;; ELISP> (lax-plist-get response-list "one")
-;; nil
