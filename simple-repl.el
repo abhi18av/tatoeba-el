@@ -25,7 +25,7 @@
 (define-derived-mode simple-repl-mode text-mode "simple-repl"
   (make-simple-repl-variables)
   (insert "In the beginning was the word ...")
- ;  (insert "\n=>> ")
+ ;  (inse(lax-plist-get p-ls "a")rt "\n=>> ")
 
   (progn
     (insert (propertize "\n=>>" 'face '(:foreground "green" )))
@@ -101,16 +101,23 @@
   )
 
 
+;; using a property list for this purpose
+(defvar response-list  '("a" 1 "b" 2 "c" 3))
+
 
 
 
 (defun simple-repl-response ()
-  (if
-      (-contains-p (s-split " " sentence) "are")
+  (cond
+   
 
-    (insert (propertize "rrr" 'face '(:foreground "red")))
+   ((-contains-p (s-split " " sentence) "are")
+    (insert (propertize "rrr" 'face '(:foreground "red"))))
 
-    (insert (propertize "hmm" 'face '(:foreground "skyblue"))))
+    ;; default case for cond 
+    (t (insert (propertize "hmm" 'face '(:foreground "skyblue")))))
+
+
 
     (insert "\n")
   )
