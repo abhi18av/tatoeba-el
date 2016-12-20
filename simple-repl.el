@@ -25,7 +25,7 @@
 (define-derived-mode simple-repl-mode text-mode "simple-repl"
   (make-simple-repl-variables)
   (insert "In the beginning was the word ...")
- ;  (insert "\n=>> ")
+ ;  (inse(lax-plist-get p-ls "a")rt "\n=>> ")
 
   (progn
     (insert (propertize "\n=>>" 'face '(:foreground "green" )))
@@ -101,19 +101,41 @@
   )
 
 
+;; using a property list for this purpose
+(defvar response-list nil)
+;; using SETQ instead of DEFVAR
+(setq response-list  '("one" 1 "two" 2 "three" 3))
+
 
 
 
 (defun simple-repl-response ()
-  (if
-      (-contains-p (s-split " " sentence) "are")
+  (cond
 
-    (insert (propertize "rrr" 'face '(:foreground "red")))
+   ;; if the sentence contains only ONE word and the word is in the response list
 
-    (insert (propertize "hmm" 'face '(:foreground "skyblue"))))
+   ((equal
+     (length (s-split " " sentence))          2)
+;    (insert (second (s-split " " sentence))))
+     (insert (number-to-string (lax-plist-get response-list
+                            (second (s-split " " sentence))))))
+
+
+   ((-contains-p (s-split " " sentence) "are")
+    (insert (propertize "rrr" 'face '(:foreground "red"))))
+
+    ;; default case for cond
+    (t (insert (propertize "hmm" 'face '(:foreground "skyblue")))))
+
+
+
+;  (insert (number-to-string (length (s-split " " sentence))))
 
     (insert "\n")
   )
 
 
-
+;; (defvar response-list  '("one" 1 "two" 2 "three" 3))
+;; response-list
+;; ELISP> (lax-plist-get response-list "one")
+;; nil
