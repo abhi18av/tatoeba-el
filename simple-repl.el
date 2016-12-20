@@ -107,7 +107,7 @@
 ;; using a property list for this purpose
 (defvar response-list nil)
 ;; using SETQ instead of DEFVAR
-(setq response-list  '("one" 1 "two" 2 "three" 3))
+(setq response-list  '(":1" "one" ":2" "two" ":3" "three"))
 
 
 (defvar response-list-ht nil)
@@ -122,10 +122,8 @@
 
    (
     (ht-contains-p response-list-ht (second (s-split " " sentence)))
-
-;    (insert (second (s-split " " sentence))))
-     (insert (number-to-string (lax-plist-get response-list
-                            (second (s-split " " sentence))))))
+     (insert  (lax-plist-get response-list
+                            (second (s-split " " sentence)))))
 
 
    ((-contains-p (s-split " " sentence) "are")
