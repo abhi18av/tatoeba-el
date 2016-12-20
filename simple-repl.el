@@ -102,19 +102,26 @@
 
 
 ;; using a property list for this purpose
-(defvar response-list  '("a" 1 "b" 2 "c" 3))
+(defvar response-list  '("one" 1 "two" 2 "three" 3))
 
 
 
 
 (defun simple-repl-response ()
   (cond
-   
+
+   ;; if the sentence contains only ONE word and the word is in the response list
+
+   ((equal (length (s-split " " sentence)) 1)
+
+    (insert (lax-plist-get response-list
+                           (first (s-split " " sentence)))))
+
 
    ((-contains-p (s-split " " sentence) "are")
     (insert (propertize "rrr" 'face '(:foreground "red"))))
 
-    ;; default case for cond 
+    ;; default case for cond
     (t (insert (propertize "hmm" 'face '(:foreground "skyblue")))))
 
 
@@ -123,4 +130,7 @@
   )
 
 
-
+;; (defvar response-list  '("one" 1 "two" 2 "three" 3))
+;; response-list
+;; ELISP> (lax-plist-get response-list "one")
+;; nil
