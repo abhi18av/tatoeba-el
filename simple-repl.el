@@ -102,7 +102,9 @@
 
 
 ;; using a property list for this purpose
-(defvar response-list  '("one" 1 "two" 2 "three" 3))
+(defvar response-list nil)
+;; using SETQ instead of DEFVAR
+(setq response-list  '("one" 1 "two" 2 "three" 3))
 
 
 
@@ -112,10 +114,11 @@
 
    ;; if the sentence contains only ONE word and the word is in the response list
 
-   ((equal (length (s-split " " sentence)) 1)
-
-    (insert (lax-plist-get response-list
-                           (first (s-split " " sentence)))))
+   ((equal
+     (length (s-split " " sentence))          2)
+;    (insert (second (s-split " " sentence))))
+     (insert (number-to-string (lax-plist-get response-list
+                            (second (s-split " " sentence))))))
 
 
    ((-contains-p (s-split " " sentence) "are")
@@ -125,6 +128,8 @@
     (t (insert (propertize "hmm" 'face '(:foreground "skyblue")))))
 
 
+
+;  (insert (number-to-string (length (s-split " " sentence))))
 
     (insert "\n")
   )
