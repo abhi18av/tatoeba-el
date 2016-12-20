@@ -79,7 +79,14 @@
 
 
   (simple-repl-response)
-  (progn 
+  (progn
+
+    ;; here we add the function to handle the string  to be translated.
+
+    ; @ 你好马？ 
+    ;=>> :en hello / Hello
+    ; # correct/ retry
+
   (insert (propertize "\n=>>" 'face '(:foreground "green" )))
   (insert " "))
 
