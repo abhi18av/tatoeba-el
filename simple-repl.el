@@ -12,7 +12,8 @@
                                    (font-lock-mode -1)) 'append)
 
 
-
+(add-hook 'simple-repl-mode-hook (lambda () 
+                             (company-mode -1)) 'append)
 
 
 (defvar simple-repl-mode-map
@@ -107,6 +108,9 @@
 (setq response-list  '("one" 1 "two" 2 "three" 3))
 
 
+(defvar response-list-ht nil)
+(setq response-list-ht (ht<-plist response-list))
+
 
 
 (defun simple-repl-response ()
@@ -114,8 +118,9 @@
 
    ;; if the sentence contains only ONE word and the word is in the response list
 
-   ((equal
-     (length (s-split " " sentence))          2)
+   (
+    (ht-contains-p response-list-ht (second (s-split " " sentence)))
+
 ;    (insert (second (s-split " " sentence))))
      (insert (number-to-string (lax-plist-get response-list
                             (second (s-split " " sentence))))))
