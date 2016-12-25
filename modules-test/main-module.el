@@ -1,6 +1,6 @@
 
 
-(defun module-print-message ()
+(defun main-module-message ()
   (message-box "this is defined in the module")
 
 

@@ -1,5 +1,5 @@
-(require 'module)
+(require 'main-module)
 
-(module-print-message)
+(main-module-message)
 
 (provide 'main)
