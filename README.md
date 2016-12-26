@@ -12,3 +12,6 @@ Heavily inspired from ideas originating in
 - LWT
 - Anki
 - ReadLang
+
+
+![alt text](https://github.com/abhi18av/tatoeba-el/blob/master/screen-shot.png)
