@@ -104,30 +104,3 @@
 
 
 
-
-(defvar sentence nil)
-(defun simple-repl-readin ()
-  (progn
-    (previous-line 1)
-    (setq sentence
-          (buffer-substring-no-properties (line-beginning-position) (line-end-position)))
-
-    (next-line 1)
-    )
-
-  sentence
-  )
-
-
-;; using a property list for this purpose
-(defvar response-list nil)
-;; using SETQ instead of DEFVAR
-(setq response-list  '(":1" "one" ":2" "two" ":3" "three"))
-
-
-(defvar response-list-ht nil)
-(setq response-list-ht (ht<-plist response-list))
-
-
-
-
