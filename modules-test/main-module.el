@@ -1,9 +1,9 @@
 
 
 (defun main-module-message ()
-  (message-box "this is defined in the module")
+  (message-box "this is defined in the module"))
 
 
 
-(provide 'module)
+(provide 'main-module)
 
